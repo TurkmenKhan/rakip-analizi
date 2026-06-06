@@ -15,9 +15,12 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
+from concurrent.futures import ThreadPoolExecutor, as_completed
+
 from db import (
     get_active_isps, get_isp_url_selectors_with_cd,
     get_last_parsed_ts, update_last_parsed_ts,
+    update_url_last_parsed_ts,
     save_snapshot, add_alert, mark_packages_inactive,
 )
 from llm_parser              import parse_with_llm
@@ -45,6 +48,41 @@ def setup_logging():
     )
 
 
+_URL_BATCH_THRESHOLD = 15   # Bu kadar URL'den fazlası → per-URL LLM modu
+
+
+def _parse_per_url(bridge, infos: list[dict], isp_name: str) -> list[dict]:
+    """
+    Çok URL'li ISS'ler (ör. TT) için her URL'yi ayrı LLM çağrısıyla parse eder.
+    infos: get_isp_url_selectors_with_cd() çıktısı (id, cd_uuid, url, ...)
+    Sonuçları birleştirip döndürür; hız+taahhüt bazlı deduplikasyon uygular.
+    """
+    def _fetch_and_parse(info):
+        uuid = info["cd_uuid"]
+        text = bridge.get_latest_snapshot(uuid)
+        if not text:
+            return []
+        return parse_with_llm(text, isp_name)
+
+    all_packages = []
+    seen_keys = set()
+
+    with ThreadPoolExecutor(max_workers=3) as ex:
+        futures = {ex.submit(_fetch_and_parse, info): info for info in infos}
+        for fut in as_completed(futures):
+            try:
+                pkgs = fut.result()
+                for p in pkgs:
+                    key = (p.get("hiz_mbps"), p.get("sozlesme_suresi_ay"), int(p.get("fiyat_ilk_donem") or 0))
+                    if key not in seen_keys:
+                        seen_keys.add(key)
+                        all_packages.append(p)
+            except Exception as e:
+                logging.warning(f"[per-URL parse hata] {e}")
+
+    return all_packages
+
+
 def run_once(sadece_rakip: bool = False):
     tum_isps = get_active_isps()
     if sadece_rakip:
@@ -63,6 +101,13 @@ def run_once(sadece_rakip: bool = False):
         logging.error(f"CD watches alınamadı: {e}")
         watches = {}
 
+    # uuid → last_changed eşleme tablosu (hızlı lookup)
+    uuid_ts: dict[str, int] = {
+        uuid: int(w.get("last_changed") or 0)
+        for uuid, w in watches.items()
+        if isinstance(w, dict)
+    }
+
     kontrol = degisim = llm_cagri = hata = 0
 
     for isp in isps:
@@ -73,60 +118,60 @@ def run_once(sadece_rakip: bool = False):
             url_infos = get_isp_url_selectors_with_cd(isp_id)
 
             # CD'de UUID'si olan URL'ler
-            cd_all   = [(i["cd_uuid"], i["url"]) for i in url_infos if i["cd_uuid"]]
-            cd_parse = [(i["cd_uuid"], i["url"]) for i in url_infos if i["cd_uuid"] and i.get("parse_pkg", 1)]
+            cd_infos = [i for i in url_infos if i["cd_uuid"]]
 
-            if not cd_all:
+            if not cd_infos:
                 # CD'de hiç URL'si yok → paketleri pasif yap
                 mark_packages_inactive(isp_id, [])
                 logging.info(f"[−] {isp_name} — CD'de yok, paketler pasif edildi")
                 continue
 
-            # CD'nin last_changed timestamp'ini al (tüm URL'ler arasında en yeni)
-            max_last_changed = max(
-                int(watches.get(uuid, {}).get("last_changed") or 0)
-                for uuid, _ in cd_all
-            )
+            # Hangi URL'ler gerçekten değişti? (per-URL timestamp karşılaştırması)
+            changed_infos = [
+                i for i in cd_infos
+                if uuid_ts.get(i["cd_uuid"], 0) > i["last_parsed_ts"]
+            ]
 
-            last_parsed = get_last_parsed_ts(isp_id)
-
-            # ISS'in parse_paketler=0 kontrolü (diff-only mod, ör. TT)
-            try:
-                parse_paketler = isp["parse_paketler"]
-            except (IndexError, KeyError):
-                parse_paketler = 1
-
-            if max_last_changed > 0 and max_last_changed <= last_parsed:
-                # CD'de değişim yok — atla
+            if not changed_infos:
                 logging.debug(f"[=] {isp_name} — değişim yok")
                 kontrol += 1
                 continue
 
-            # Değişim var (veya hiç parse edilmemiş)
-            logging.info(f"[~] {isp_name} — CD değişimi tespit edildi, işleniyor...")
+            logging.info(f"[~] {isp_name} — {len(changed_infos)}/{len(cd_infos)} URL değişti")
             degisim += 1
 
-            # parse_paketler=0 → sadece timestamp güncelle, LLM çağırma
-            if not parse_paketler:
-                update_last_parsed_ts(isp_id, max_last_changed)
+            # parse_pkg=1 olan değişen URL'ler → LLM'e gidecek
+            parse_infos = [i for i in changed_infos if i.get("parse_pkg", 1)]
+
+            # parse_pkg=0 URL'ler değiştiyse sadece timestamp güncelle
+            diff_only_infos = [i for i in changed_infos if not i.get("parse_pkg", 1)]
+            for i in diff_only_infos:
+                update_url_last_parsed_ts(i["id"], uuid_ts.get(i["cd_uuid"], 0))
+
+            if not parse_infos:
+                # Sadece duyuru/diff-only URL'ler değişti
                 save_snapshot(isp_id)
-                logging.info(f"[✓] {isp_name} — diff-only mod (paket parse yok)")
+                logging.info(f"[✓] {isp_name} — diff-only URL değişimi kaydedildi")
                 kontrol += 1
-                continue
-
-            # Snapshot'ı CD'den çek (sadece parse_pkg=1 URL'ler)
-            fetch_pairs = cd_parse if cd_parse else cd_all
-            snapshot_text, _ = bridge.get_multi_snapshot_with_urls(fetch_pairs)
-
-            if not snapshot_text:
-                logging.warning(f"[!] {isp_name} — CD snapshot boş, atlanıyor")
-                hata += 1
                 continue
 
             # LLM ile parse et
             try:
-                packages = parse_with_llm(snapshot_text, isp_name)
-                llm_cagri += 1
+                if len(parse_infos) > _URL_BATCH_THRESHOLD:
+                    # Çok URL'li ISS → her URL ayrı LLM çağrısı (paralel, 3 worker)
+                    logging.info(f"  {isp_name}: {len(parse_infos)} URL → per-URL mod")
+                    packages = _parse_per_url(bridge, parse_infos, isp_name)
+                    llm_cagri += len(parse_infos)
+                else:
+                    fetch_pairs = [(i["cd_uuid"], i["url"]) for i in parse_infos]
+                    snapshot_text, _ = bridge.get_multi_snapshot_with_urls(fetch_pairs)
+                    if not snapshot_text:
+                        logging.warning(f"[!] {isp_name} — CD snapshot boş, atlanıyor")
+                        hata += 1
+                        continue
+                    packages = parse_with_llm(snapshot_text, isp_name)
+                    llm_cagri += 1
+
                 if not packages:
                     logging.warning(f"[!] {isp_name} — LLM 0 paket döndü")
 
@@ -134,9 +179,12 @@ def run_once(sadece_rakip: bool = False):
                 save_snapshot(isp_id, parse_json=parse_json, llm_cagrildi=1)
 
                 process(isp_id, isp_name, packages)
-                update_last_parsed_ts(isp_id, max_last_changed)
 
-                logging.info(f"[✓] {isp_name} — {len(packages)} paket (LLM)")
+                # Başarılıysa parse_pkg=1 URL'lerin timestamp'ini güncelle
+                for i in parse_infos:
+                    update_url_last_parsed_ts(i["id"], uuid_ts.get(i["cd_uuid"], 0))
+
+                logging.info(f"[✓] {isp_name} — {len(packages)} paket (LLM, {len(parse_infos)} URL)")
 
             except Exception as e:
                 logging.error(f"[PARSE HATA] {isp_name}: {e}")

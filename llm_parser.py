@@ -8,6 +8,7 @@ import json
 import logging
 import os
 import re
+import time
 
 import requests
 
@@ -88,12 +89,25 @@ def parse_with_llm(text: str, isp_name: str = "") -> list[dict]:
         "max_tokens":  16384,
     }
 
-    try:
-        resp = requests.post(LLM_URL, headers=headers, json=body, timeout=_TIMEOUT)
-        resp.raise_for_status()
-        raw = resp.json()["choices"][0]["message"]["content"].strip()
-    except Exception as e:
-        logging.warning(f"[LLM] API hatası ({isp_name}): {e}")
+    # 429 için retry (3 deneme, artan bekleme)
+    for attempt in range(3):
+        try:
+            resp = requests.post(LLM_URL, headers=headers, json=body, timeout=_TIMEOUT)
+            if resp.status_code == 429:
+                wait = (attempt + 1) * 5
+                logging.debug(f"[LLM] 429 rate limit ({isp_name}), {wait}sn bekleniyor...")
+                time.sleep(wait)
+                continue
+            resp.raise_for_status()
+            raw = resp.json()["choices"][0]["message"]["content"].strip()
+            break
+        except Exception as e:
+            if attempt == 2:
+                logging.warning(f"[LLM] API hatası ({isp_name}): {e}")
+                return []
+            time.sleep((attempt + 1) * 3)
+    else:
+        logging.warning(f"[LLM] 429 — tüm denemeler tükendi ({isp_name})")
         return []
 
     # JSON çıkar (```json ... ``` bloğu olabilir)

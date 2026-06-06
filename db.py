@@ -85,12 +85,14 @@ def create_tables():
         );
 
         CREATE TABLE IF NOT EXISTS isp_urls (
-            id       INTEGER PRIMARY KEY AUTOINCREMENT,
-            isp_id   INTEGER NOT NULL REFERENCES isps(id),
-            url      TEXT    NOT NULL,
-            etiket   TEXT,
-            aktif    INTEGER DEFAULT 1,
-            cd_uuid  TEXT,
+            id             INTEGER PRIMARY KEY AUTOINCREMENT,
+            isp_id         INTEGER NOT NULL REFERENCES isps(id),
+            url            TEXT    NOT NULL,
+            etiket         TEXT,
+            aktif          INTEGER DEFAULT 1,
+            cd_uuid        TEXT,
+            parse_pkg      INTEGER DEFAULT 1,
+            last_parsed_ts INTEGER DEFAULT 0,
             UNIQUE(isp_id, url)
         );
 
@@ -131,21 +133,26 @@ def get_active_isps() -> list[sqlite3.Row]:
 
 def get_isp_url_selectors_with_cd(isp_id: int) -> list[dict]:
     """
-    ISS için {url, selector, cd_uuid, parse_pkg} dict listesini döndürür.
+    ISS için {id, url, selector, cd_uuid, parse_pkg, last_parsed_ts} dict listesini döndürür.
     parse_pkg=0 → değişim tespiti için izle ama package parse'a katma.
     isp_urls tablosu boşsa isps.url'den döner.
     """
     conn = get_conn()
     extra = conn.execute(
-        "SELECT url, selector, cd_uuid, COALESCE(parse_pkg,1) as parse_pkg FROM isp_urls WHERE isp_id=? AND aktif=1",
+        """SELECT id, url, selector, cd_uuid,
+                  COALESCE(parse_pkg,1) as parse_pkg,
+                  COALESCE(last_parsed_ts,0) as last_parsed_ts
+           FROM isp_urls WHERE isp_id=? AND aktif=1""",
         (isp_id,)
     ).fetchall()
     if extra:
-        result = [{"url": r["url"], "selector": r["selector"] or None,
-                   "cd_uuid": r["cd_uuid"], "parse_pkg": r["parse_pkg"]} for r in extra]
+        result = [{"id": r["id"], "url": r["url"], "selector": r["selector"] or None,
+                   "cd_uuid": r["cd_uuid"], "parse_pkg": r["parse_pkg"],
+                   "last_parsed_ts": r["last_parsed_ts"]} for r in extra]
     else:
         row = conn.execute("SELECT url FROM isps WHERE id=?", (isp_id,)).fetchone()
-        result = [{"url": row["url"], "selector": None, "cd_uuid": None, "parse_pkg": 1}] if row else []
+        result = [{"id": None, "url": row["url"], "selector": None,
+                   "cd_uuid": None, "parse_pkg": 1, "last_parsed_ts": 0}] if row else []
     conn.close()
     return result
 
@@ -159,9 +166,19 @@ def get_last_parsed_ts(isp_id: int) -> int:
 
 
 def update_last_parsed_ts(isp_id: int, ts: int):
-    """ISS'in son parse timestamp'ini günceller."""
+    """ISS'in son parse timestamp'ini günceller (geriye dönük uyumluluk)."""
     conn = get_conn()
     conn.execute("UPDATE isps SET last_parsed_ts=? WHERE id=?", (ts, isp_id))
+    conn.commit()
+    conn.close()
+
+
+def update_url_last_parsed_ts(url_id: int, ts: int):
+    """Tek bir isp_urls satırının last_parsed_ts'ini günceller."""
+    if url_id is None:
+        return
+    conn = get_conn()
+    conn.execute("UPDATE isp_urls SET last_parsed_ts=? WHERE id=?", (ts, url_id))
     conn.commit()
     conn.close()
 

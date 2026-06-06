@@ -434,9 +434,12 @@ def _fmt_fiyat(v):
 
 
 def _fmt_hiz(v):
-    if pd.isna(v) or v == 0:
+    if pd.isna(v) or v == "" or v == 0:
         return "—"
-    return f"{int(v):,}"
+    try:
+        return f"{int(v):,}"
+    except (ValueError, TypeError):
+        return str(v)  # "5G" gibi string değerler
 
 
 _FMT = {

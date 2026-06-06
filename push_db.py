@@ -9,11 +9,18 @@ from datetime import datetime
 
 def push_db_to_github():
     try:
+        # Push öncesi VACUUM — DB küçük kalsın
+        import sqlite3, os
+        db_path = os.path.join(os.path.dirname(__file__), "data", "rakip_analizi.db")
+        conn = sqlite3.connect(db_path)
+        conn.execute("VACUUM")
+        conn.close()
+
         now = datetime.now().strftime("%Y-%m-%d %H:%M")
         cmds = [
             ["git", "add", "data/rakip_analizi.db"],
             ["git", "commit", "-m", f"DB güncelleme: {now}"],
-            ["git", "push"],
+            ["git", "push", "--set-upstream", "origin", "main"],
         ]
         for cmd in cmds:
             result = subprocess.run(

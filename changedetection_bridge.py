@@ -228,17 +228,41 @@ class ChangedetectionBridge:
                     )
                 updated.append({"id": row["id"], "url": row["url"], "uuid": uuid})
             else:
+                # CD'de yok → URL'yi pasif et
+                if not dry_run:
+                    conn.execute(
+                        "UPDATE isp_urls SET aktif=0, cd_uuid=NULL WHERE id=?",
+                        (row["id"],)
+                    )
                 not_found.append(row["url"])
+                logging.warning(f"[CD sync] CD'de yok, pasif edildi: {row['url']}")
 
         if not dry_run:
+            # CD'de hiç aktif URL'si kalmayan ISS'leri pasif et
+            deactivated_isps = conn.execute("""
+                SELECT DISTINCT i.id, i.name FROM isps i
+                WHERE i.aktif=1
+                  AND NOT EXISTS (
+                      SELECT 1 FROM isp_urls u
+                      WHERE u.isp_id=i.id AND u.aktif=1 AND u.cd_uuid IS NOT NULL
+                  )
+            """).fetchall()
+            for isp in deactivated_isps:
+                conn.execute("UPDATE isps SET aktif=0 WHERE id=?", (isp["id"],))
+                logging.warning(f"[CD sync] CD'de URL yok, ISS pasif edildi: {isp['name']}")
             conn.commit()
 
         conn.close()
+
+        # CD'de olup isp_urls'de eşleşmeyen watch'ları mevcut ISS'lere domain bazlı ekle
+        added = _add_unmatched_cd_watches(watches, dry_run) if not dry_run else []
+
         logging.info(
             f"[CD sync] {len(updated)} URL eşleşti, "
-            f"{len(not_found)} eşleşmedi, {migrated} migrate edildi"
+            f"{len(not_found)} CD'de yok (pasif edildi), "
+            f"{migrated} migrate edildi, {len(added)} yeni CD URL eklendi"
         )
-        return {"updated": updated, "not_found": not_found, "migrated": migrated}
+        return {"updated": updated, "not_found": not_found, "migrated": migrated, "added": added}
 
 
 # ── Yardımcı ───────────────────────────────────────────────────────────────────
@@ -268,6 +292,67 @@ def _migrate_isps_to_isp_urls() -> int:
     conn.commit()
     conn.close()
     return count
+
+
+def _add_unmatched_cd_watches(watches: dict, dry_run: bool = False) -> list:
+    """
+    CD'de olup isp_urls'de eşleşmeyen watch'ları domain bazlı mevcut ISS'lere ekler.
+    Eşleşmeyen ve yeni ISS gerektirenleri loglar, eklemez (kullanıcı kararı).
+    Döndürür: eklenen {url, isp_id, uuid} listesi.
+    """
+    from urllib.parse import urlparse
+    from db import get_conn
+
+    conn = get_conn()
+
+    # Mevcut aktif isp_urls (normalized)
+    existing_normalized = {
+        _norm_url(r["url"])
+        for r in conn.execute("SELECT url FROM isp_urls WHERE aktif=1").fetchall()
+    }
+
+    # Aktif ISS'lerin domain → isp_id eşlemesi
+    isps = conn.execute("SELECT id, url FROM isps WHERE aktif=1").fetchall()
+    domain_to_isp: dict[str, int] = {}
+    for isp in isps:
+        try:
+            domain = urlparse(isp["url"]).netloc.lower().lstrip("www.")
+            if domain:
+                domain_to_isp[domain] = isp["id"]
+        except Exception:
+            pass
+
+    added = []
+    for uuid, w in watches.items():
+        url = w.get("url", "")
+        if not url:
+            continue
+        if _norm_url(url) in existing_normalized:
+            continue  # Zaten var
+
+        # Domain bazlı ISS eşleştir
+        try:
+            domain = urlparse(url).netloc.lower().lstrip("www.")
+        except Exception:
+            domain = ""
+
+        isp_id = domain_to_isp.get(domain)
+        if isp_id is None:
+            logging.warning(f"[CD sync] ISS eşleşmedi, isp_urls'e eklenemiyor: {url}")
+            continue
+
+        if not dry_run:
+            conn.execute(
+                "INSERT OR IGNORE INTO isp_urls (isp_id, url, aktif, cd_uuid) VALUES (?,?,1,?)",
+                (isp_id, url, uuid)
+            )
+            logging.info(f"[CD sync] Yeni CD URL eklendi (isp_id={isp_id}): {url}")
+        added.append({"url": url, "isp_id": isp_id, "uuid": uuid})
+
+    if not dry_run:
+        conn.commit()
+    conn.close()
+    return added
 
 
 def _norm_url(url: str) -> str:
