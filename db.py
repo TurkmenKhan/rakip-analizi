@@ -59,6 +59,7 @@ def create_tables():
             bolge_kisiti          TEXT,
             kampanya_bitis        TEXT,
             ham_metin             TEXT,
+            kaynak_url            TEXT,
             son_guncelleme        TEXT    DEFAULT (datetime('now','localtime')),
             aktif                 INTEGER DEFAULT 1
         );
@@ -241,6 +242,7 @@ def upsert_package(isp_id: int, pkg: dict):
         "bolge_kisiti":         pkg.get("bolge_kisiti"),
         "kampanya_bitis":       pkg.get("kampanya_bitis"),
         "ham_metin":            pkg.get("ham_metin"),
+        "kaynak_url":           pkg.get("kaynak_url"),
         "aktif":                1,
     }
 

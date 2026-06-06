@@ -23,7 +23,7 @@ from db import (
     update_url_last_parsed_ts,
     save_snapshot, add_alert, mark_packages_inactive,
 )
-from llm_parser              import parse_with_llm
+from llm_parser              import parse_with_llm, map_pkg_with_url
 from alerts                  import process
 from push_db                 import push_db_to_github
 from changedetection_bridge  import get_bridge
@@ -59,10 +59,15 @@ def _parse_per_url(bridge, infos: list[dict], isp_name: str) -> list[dict]:
     """
     def _fetch_and_parse(info):
         uuid = info["cd_uuid"]
+        url  = info["url"]
         text = bridge.get_latest_snapshot(uuid)
         if not text:
             return []
-        return parse_with_llm(text, isp_name)
+        pkgs = parse_with_llm(text, isp_name)
+        # Her pakete kaynak URL'yi ekle
+        for p in pkgs:
+            p["kaynak_url"] = url
+        return pkgs
 
     all_packages = []
     seen_keys = set()
@@ -170,6 +175,11 @@ def run_once(sadece_rakip: bool = False):
                         hata += 1
                         continue
                     packages = parse_with_llm(snapshot_text, isp_name)
+                    # Batch modda kaynak URL: tüm URL'leri virgülle birleştir
+                    batch_url = ", ".join(i["url"] for i in parse_infos)
+                    for p in packages:
+                        if not p.get("kaynak_url"):
+                            p["kaynak_url"] = batch_url
                     llm_cagri += 1
 
                 if not packages:

@@ -130,6 +130,13 @@ def parse_with_llm(text: str, isp_name: str = "") -> list[dict]:
     return [_map_pkg(p) for p in paketler if isinstance(p, dict)]
 
 
+def map_pkg_with_url(p: dict, kaynak_url: str | None) -> dict:
+    """_map_pkg + kaynak_url enjeksiyonu."""
+    result = _map_pkg(p)
+    result["kaynak_url"] = kaynak_url
+    return result
+
+
 def _rescue_truncated_json(raw: str) -> dict | None:
     """
     Kesik JSON'dan geçerli paket listesini kurtarmaya çalışır.
@@ -193,6 +200,7 @@ def _map_pkg(p: dict) -> dict:
         "bolge_kisiti":         p.get("bolge") or None,
         "kampanya_bitis":       p.get("kampanya_bitis") or None,
         "ham_metin":            None,
+        "kaynak_url":           None,   # main.py tarafından doldurulur
     }
 
 
