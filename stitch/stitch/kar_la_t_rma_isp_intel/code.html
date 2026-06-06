@@ -1,0 +1,489 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="tr"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>ISP INTEL - Karşılaştırma</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&amp;family=Geist:wght@600;700&amp;family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@100..900&amp;family=Inter:wght@100..900&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-secondary-fixed": "#002113",
+                        "inverse-primary": "#00687a",
+                        "surface-container": "#1b2122",
+                        "inverse-on-surface": "#2b3133",
+                        "on-primary-container": "#00424f",
+                        "outline-variant": "#3d494c",
+                        "surface": "#0e1416",
+                        "error-container": "#93000a",
+                        "outline": "#869397",
+                        "on-tertiary-container": "#7e000f",
+                        "on-secondary-fixed-variant": "#005236",
+                        "secondary-container": "#00a572",
+                        "surface-container-low": "#171d1e",
+                        "on-primary": "#003640",
+                        "tertiary-container": "#ff817a",
+                        "on-background": "#dee3e6",
+                        "surface-container-highest": "#303638",
+                        "tertiary-fixed-dim": "#ffb3ad",
+                        "secondary-fixed": "#6ffbbe",
+                        "background": "#0e1416",
+                        "on-surface-variant": "#bcc9cd",
+                        "surface-container-lowest": "#090f11",
+                        "primary-container": "#06b6d4",
+                        "primary-fixed-dim": "#4cd7f6",
+                        "on-error": "#690005",
+                        "primary": "#4cd7f6",
+                        "on-primary-fixed-variant": "#004e5c",
+                        "secondary": "#4edea3",
+                        "surface-variant": "#303638",
+                        "on-tertiary-fixed": "#410004",
+                        "on-tertiary-fixed-variant": "#930013",
+                        "on-error-container": "#ffdad6",
+                        "surface-container-high": "#252b2d",
+                        "surface-dim": "#0e1416",
+                        "inverse-surface": "#dee3e6",
+                        "tertiary-fixed": "#ffdad7",
+                        "primary-fixed": "#acedff",
+                        "secondary-fixed-dim": "#4edea3",
+                        "surface-tint": "#4cd7f6",
+                        "surface-bright": "#343a3c",
+                        "error": "#ffb4ab",
+                        "on-surface": "#dee3e6",
+                        "on-secondary-container": "#00311f",
+                        "on-secondary": "#003824",
+                        "tertiary": "#ffb3ad",
+                        "on-primary-fixed": "#001f26",
+                        "on-tertiary": "#68000a"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "spacing": {
+                        "xs": "4px",
+                        "lg": "24px",
+                        "md": "16px",
+                        "xl": "32px",
+                        "margin-desktop": "32px",
+                        "margin-mobile": "16px",
+                        "sm": "8px",
+                        "gutter": "16px",
+                        "base": "4px"
+                    },
+                    "fontFamily": {
+                        "display-lg": ["Geist"],
+                        "metric-xl": ["Geist"],
+                        "caption": ["Inter"],
+                        "body-md": ["Inter"],
+                        "label-uppercase": ["Inter"],
+                        "body-sm": ["Inter"],
+                        "body-lg": ["Inter"],
+                        "headline-lg": ["Geist"],
+                        "headline-lg-mobile": ["Geist"]
+                    },
+                    "fontSize": {
+                        "display-lg": ["48px", {"lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                        "metric-xl": ["36px", {"lineHeight": "44px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                        "caption": ["12px", {"lineHeight": "16px", "fontWeight": "400"}],
+                        "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                        "label-uppercase": ["12px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "600"}],
+                        "body-sm": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                        "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}],
+                        "headline-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                        "headline-lg-mobile": ["24px", {"lineHeight": "32px", "fontWeight": "600"}]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            display: inline-block;
+            vertical-align: middle;
+            line-height: 1;
+        }
+        body {
+            background-color: #0e1416;
+            color: #dee3e6;
+            scrollbar-width: thin;
+            scrollbar-color: #3d494c transparent;
+        }
+        .glass-card {
+            background: rgba(30, 41, 59, 0.7);
+            backdrop-filter: blur(8px);
+            border: 1px solid #334155;
+        }
+        .gold-border { border: 2px solid #fbbf24; box-shadow: 0 0 15px rgba(251, 191, 36, 0.15); }
+        .silver-border { border: 2px solid #94a3b8; box-shadow: 0 0 15px rgba(148, 163, 184, 0.15); }
+        .bronze-border { border: 2px solid #b45309; box-shadow: 0 0 15px rgba(180, 83, 9, 0.15); }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="font-body-md text-body-md overflow-hidden">
+<!-- Navigation Drawer -->
+<nav class="w-72 h-full fixed left-0 top-0 flex flex-col h-screen py-md bg-surface dark:bg-surface border-r border-outline-variant dark:border-outline-variant z-50">
+<div class="px-lg mb-xl">
+<span class="text-headline-lg font-headline-lg font-bold text-primary dark:text-primary">ISP INTEL</span>
+</div>
+<div class="flex flex-col gap-xs flex-grow">
+<a class="flex items-center gap-md px-md py-sm text-on-surface-variant hover:bg-surface-container-high mx-2 transition-colors duration-200 rounded-lg" href="#">
+<span class="material-symbols-outlined">dashboard</span>
+<span class="font-body-md">GENEL BAKIŞ</span>
+</a>
+<a class="flex items-center gap-md px-md py-sm bg-secondary-container text-on-secondary-container rounded-lg mx-2 transition-all duration-200 active:scale-[0.98]" href="#">
+<span class="material-symbols-outlined">compare_arrows</span>
+<span class="font-body-md">KARŞILAŞTIRMA</span>
+</a>
+<a class="flex items-center gap-md px-md py-sm text-on-surface-variant hover:bg-surface-container-high mx-2 transition-colors duration-200 rounded-lg" href="#">
+<span class="material-symbols-outlined">table_rows</span>
+<span class="font-body-md">TÜM PAKETLER</span>
+</a>
+<a class="flex items-center gap-md px-md py-sm text-on-surface-variant hover:bg-surface-container-high mx-2 transition-colors duration-200 rounded-lg" href="#">
+<span class="material-symbols-outlined">corporate_fare</span>
+<span class="font-body-md">ISS PROFİLİ</span>
+</a>
+<a class="flex items-center gap-md px-md py-sm text-on-surface-variant hover:bg-surface-container-high mx-2 transition-colors duration-200 rounded-lg" href="#">
+<span class="material-symbols-outlined">notifications</span>
+<span class="font-body-md">BİLDİRİMLER</span>
+</a>
+<a class="flex items-center gap-md px-md py-sm text-on-surface-variant hover:bg-surface-container-high mx-2 transition-colors duration-200 rounded-lg" href="#">
+<span class="material-symbols-outlined">show_chart</span>
+<span class="font-body-md">FİYAT TRENDİ</span>
+</a>
+</div>
+<div class="mt-auto px-lg py-md border-t border-outline-variant">
+<div class="flex items-center gap-md">
+<div class="w-10 h-10 rounded-full bg-primary-container flex items-center justify-center overflow-hidden">
+<img alt="Avatar" class="w-full h-full object-cover" data-alt="A professional headshot of a data analyst in a modern office environment. The person has a focused expression, wearing clean, minimalist corporate attire. The lighting is soft and cinematic with cool blue and cyan undertones to match the high-tech ISP Intel brand aesthetic. The background is slightly blurred showing digital screens with data visualizations." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDPtSd1GvQyl7jRkiRLS3GJ2xFkmhYuNkJ9Y2nNR5hqnQquVbR5k9WBis4z4Jy8FoMU5470G6Ce0aeDPmcFSh3byK5XZomDju9OtXLaA57BJ9JkXGLlXY525or7Zf2x6AB3WjTsXsLUbCmawsJ2pR_TwzcF6pBX3qDAeF1XsE52FN3jtE1ouvIJusPWm2jaIXe21C0spFiR4L-8-FRzHE2feVAH9c_FhloCTgFSdcwQ2gtsikRP28ssj_ilvnCE3Wl5t8ed3hI3N8k"/>
+</div>
+<div class="flex flex-col">
+<span class="font-label-uppercase text-label-uppercase text-on-surface">Analist Kerem</span>
+<span class="font-caption text-caption text-on-surface-variant">Kıdemli Veri Uzmanı</span>
+</div>
+</div>
+</div>
+</nav>
+<!-- Main Content Area -->
+<main class="ml-72 flex flex-col h-screen overflow-hidden">
+<!-- Top App Bar -->
+<header class="flex justify-between items-center w-full px-lg h-16 bg-surface-container dark:bg-surface-container border-b border-outline-variant dark:border-outline-variant">
+<div class="flex items-center gap-md">
+<span class="material-symbols-outlined text-primary cursor-pointer active:scale-95 transition-transform">menu</span>
+<h1 class="font-headline-lg text-headline-lg text-primary">Karşılaştırma</h1>
+</div>
+<div class="flex items-center gap-xl">
+<div class="relative group">
+<span class="material-symbols-outlined text-on-surface-variant cursor-pointer group-hover:text-primary transition-colors">search</span>
+</div>
+<div class="w-8 h-8 rounded-full bg-secondary-container text-on-secondary-container flex items-center justify-center font-bold text-caption">UP</div>
+</div>
+</header>
+<!-- Scrollable Canvas -->
+<div class="flex-grow overflow-y-auto p-lg space-y-lg">
+<!-- Filter Bar -->
+<div class="glass-card rounded-xl p-md flex flex-wrap items-center gap-lg">
+<div class="flex flex-col gap-xs">
+<label class="font-caption text-caption text-on-surface-variant">Hız Kademesi</label>
+<select class="bg-surface border border-outline-variant rounded-lg px-md py-xs text-on-surface font-body-sm focus:border-primary outline-none transition-colors">
+<option>100 Mbps</option>
+<option>200 Mbps</option>
+<option>500 Mbps</option>
+<option>1000 Mbps</option>
+</select>
+</div>
+<div class="flex flex-col gap-xs">
+<label class="font-caption text-caption text-on-surface-variant">Teknoloji</label>
+<div class="flex gap-sm">
+<button class="px-md py-xs bg-primary-container text-on-primary-container rounded-full font-label-uppercase text-label-uppercase transition-all active:scale-95">Fiber</button>
+<button class="px-md py-xs border border-outline-variant text-on-surface-variant rounded-full font-label-uppercase text-label-uppercase hover:bg-surface-container-high transition-all active:scale-95">VDSL</button>
+</div>
+</div>
+<div class="flex flex-col gap-xs ml-auto">
+<label class="font-caption text-caption text-on-surface-variant">Sıralama</label>
+<div class="flex items-center gap-sm bg-surface border border-outline-variant rounded-lg px-md py-xs cursor-pointer hover:bg-surface-container-high transition-colors">
+<span class="material-symbols-outlined text-primary text-[18px]">sort</span>
+<span class="text-on-surface font-body-sm">En Düşük Fiyat</span>
+</div>
+</div>
+</div>
+<!-- ISP Grid -->
+<div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-lg">
+<!-- Rank 1: Gold -->
+<div class="glass-card gold-border rounded-xl p-lg flex flex-col gap-md relative overflow-hidden group transition-all duration-300 hover:-translate-y-1">
+<div class="absolute top-0 right-0 p-sm">
+<span class="material-symbols-outlined text-yellow-500" style="font-variation-settings: 'FILL' 1;">workspace_premium</span>
+</div>
+<div class="flex justify-between items-start">
+<div class="flex items-center gap-md">
+<div class="w-12 h-12 bg-white rounded-lg flex items-center justify-center p-xs">
+<img alt="Türk Telekom" class="object-contain w-full h-full" data-alt="A minimalist vector logo of a major telecommunications company displayed on a clean white square background. The aesthetic is modern and corporate, emphasizing reliability and technological infrastructure. The lighting is uniform and flat to represent a digital asset interface in a high-performance ISP comparison dashboard." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCdBOEzy4qgw1uCaViIH317nRLWPDTOb84Yfb3AP34tqD9fJAvgftZvi4x2Opip3y6tHtM5GNag2vJ9rcyrgHfmU1kckwaf-iLgYSy5DQEmuCESo1Sn1OapPVdeju_nTvw96Of5caXXOEb_xsrNCupY619KdfQsCEk2ww-CVw88P-HmDtSL8oWg3JyaTFTZA031ABzkZ4Giclt3LeN5MmwKOEtyvdP31D11BZ6UFCZnnPBkwzIZaXkWTlfQYwWzvhR48kxj3fY8ml0"/>
+</div>
+<div>
+<h3 class="font-headline-lg-mobile text-headline-lg-mobile text-on-surface">Türk Telekom</h3>
+<p class="font-caption text-caption text-on-surface-variant">Fiber Güçlü Paket</p>
+</div>
+</div>
+</div>
+<div class="flex flex-col gap-xs py-md border-y border-outline-variant border-opacity-30">
+<div class="flex justify-between items-baseline">
+<span class="font-metric-xl text-metric-xl text-primary">₺499,90</span>
+<span class="font-caption text-caption text-on-surface-variant">/ ay</span>
+</div>
+<div class="flex items-center gap-sm text-secondary">
+<span class="material-symbols-outlined text-[16px]">trending_down</span>
+<span class="font-body-sm">%12 düşüş</span>
+</div>
+</div>
+<div class="flex gap-sm">
+<span class="px-sm py-xs bg-surface-container-highest text-on-surface rounded font-label-uppercase text-label-uppercase">Fiber</span>
+<span class="px-sm py-xs bg-surface-container-highest text-on-surface rounded font-label-uppercase text-label-uppercase">12 Ay Taahhüt</span>
+</div>
+<button class="w-full py-sm bg-primary-container text-on-primary-container font-label-uppercase text-label-uppercase rounded-lg hover:brightness-110 transition-all active:scale-[0.98]">DETAYLARI GÖR</button>
+</div>
+<!-- Rank 2: Silver -->
+<div class="glass-card silver-border rounded-xl p-lg flex flex-col gap-md relative overflow-hidden group transition-all duration-300 hover:-translate-y-1">
+<div class="absolute top-0 right-0 p-sm">
+<span class="material-symbols-outlined text-slate-400" style="font-variation-settings: 'FILL' 1;">workspace_premium</span>
+</div>
+<div class="flex justify-between items-start">
+<div class="flex items-center gap-md">
+<div class="w-12 h-12 bg-white rounded-lg flex items-center justify-center p-xs">
+<img alt="Turkcell Superonline" class="object-contain w-full h-full" data-alt="A professional telecommunications brand identity logo featuring sharp geometric lines. The logo is set against a neutral, bright white background to emphasize high-speed fiber connectivity. The visual style is crisp and high-resolution, perfectly suited for a sophisticated data-heavy comparison user interface." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAAfcV-3FeIs4EbkbUQIish1dG84pu_m4rk3aU0vL0f_Om3O1a68Tjk142TdsOQDOQgGLEfR7vmSgsrOxSkIgivqLTkIfm3GgEr_yHyCf4EUP_XMBd01dAS97N22nq4-yxWLrnlw75nMWF1Q9yv-PlXyvvLqkfSSIb9fU-qICNPRsWxgMKvXKfCML4TXB23YxViyFvq8v5c4FEy38jjlUH9Mdo3PKXXoMUMoNo0b4M0AOkSJAHquAaJjZiufSLYKcTTZN1XOWlaRFI"/>
+</div>
+<div>
+<h3 class="font-headline-lg-mobile text-headline-lg-mobile text-on-surface">Superonline</h3>
+<p class="font-caption text-caption text-on-surface-variant">Işık Hızı Fiber</p>
+</div>
+</div>
+</div>
+<div class="flex flex-col gap-xs py-md border-y border-outline-variant border-opacity-30">
+<div class="flex justify-between items-baseline">
+<span class="font-metric-xl text-metric-xl text-primary">₺512,00</span>
+<span class="font-caption text-caption text-on-surface-variant">/ ay</span>
+</div>
+<div class="flex items-center gap-sm text-on-surface-variant">
+<span class="material-symbols-outlined text-[16px]">table</span>
+<span class="font-body-sm">Sabit fiyat</span>
+</div>
+</div>
+<div class="flex gap-sm">
+<span class="px-sm py-xs bg-surface-container-highest text-on-surface rounded font-label-uppercase text-label-uppercase">Fiber</span>
+<span class="px-sm py-xs bg-surface-container-highest text-on-surface rounded font-label-uppercase text-label-uppercase">12 Ay Taahhüt</span>
+</div>
+<button class="w-full py-sm border border-primary text-primary font-label-uppercase text-label-uppercase rounded-lg hover:bg-primary-container hover:text-on-primary-container transition-all active:scale-[0.98]">DETAYLARI GÖR</button>
+</div>
+<!-- Rank 3: Bronze -->
+<div class="glass-card bronze-border rounded-xl p-lg flex flex-col gap-md relative overflow-hidden group transition-all duration-300 hover:-translate-y-1">
+<div class="absolute top-0 right-0 p-sm">
+<span class="material-symbols-outlined text-orange-800" style="font-variation-settings: 'FILL' 1;">workspace_premium</span>
+</div>
+<div class="flex justify-between items-start">
+<div class="flex items-center gap-md">
+<div class="w-12 h-12 bg-white rounded-lg flex items-center justify-center p-xs">
+<img alt="TurkNet" class="object-contain w-full h-full" data-alt="A clean and modern corporate logo for a technology-driven ISP company. The logo is displayed on a pure white square canvas, maintaining high contrast for a dark-themed UI dashboard. The overall feel is one of simplicity, speed, and disruptive market presence within the Turkish internet service sector." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCMa8LfniULlZjK33Qo45i8NH0XtRGhXx8AYVhx0wYnVvQNn2b6vk9l6WVJbq1QHoh2JAOxGl6gB2KQhyrr0lPi2FLYA5RTWLrybp3g58w2GGtI67qy2enhecnEeq_veGByqgtZxewuT3RmUVXSAXJq1q3_AoqME6-xbH4ChGxNX2ixusoMOGA-bvxE7nTvQpZ1aH6ShEHcd5CmxmQdhZcsomXgKgUVhN-BE3Puyx7x29zzqgm-JyxCMaiCb6Wv1FnPBYJzMiDOTdA"/>
+</div>
+<div>
+<h3 class="font-headline-lg-mobile text-headline-lg-mobile text-on-surface">TurkNet</h3>
+<p class="font-caption text-caption text-on-surface-variant">GigaFiber Sınırsız</p>
+</div>
+</div>
+</div>
+<div class="flex flex-col gap-xs py-md border-y border-outline-variant border-opacity-30">
+<div class="flex justify-between items-baseline">
+<span class="font-metric-xl text-metric-xl text-primary">₺539,90</span>
+<span class="font-caption text-caption text-on-surface-variant">/ ay</span>
+</div>
+<div class="flex items-center gap-sm text-error">
+<span class="material-symbols-outlined text-[16px]">trending_up</span>
+<span class="font-body-sm">%5 artış bekleniyor</span>
+</div>
+</div>
+<div class="flex gap-sm">
+<span class="px-sm py-xs bg-surface-container-highest text-on-surface rounded font-label-uppercase text-label-uppercase">Fiber</span>
+<span class="px-sm py-xs bg-surface-container-highest text-on-surface rounded font-label-uppercase text-label-uppercase">Taahhütsüz</span>
+</div>
+<button class="w-full py-sm border border-primary text-primary font-label-uppercase text-label-uppercase rounded-lg hover:bg-primary-container hover:text-on-primary-container transition-all active:scale-[0.98]">DETAYLARI GÖR</button>
+</div>
+<!-- Standard Card 1 -->
+<div class="glass-card rounded-xl p-lg flex flex-col gap-md overflow-hidden group transition-all duration-300 hover:-translate-y-1">
+<div class="flex justify-between items-start">
+<div class="flex items-center gap-md">
+<div class="w-12 h-12 bg-white rounded-lg flex items-center justify-center p-xs">
+<img alt="Vodafone" class="object-contain w-full h-full" data-alt="A global telecommunications brand logo featuring a iconic red circular symbol on a white background. The image is rendered with high precision and clean edges, symbolizing global connectivity and modern network standards. It is presented as a high-contrast tile for a data monitoring dashboard." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAMZCGZ6tH7FM5bAwpmXtIKnhs_gfX2TavOa7YBMhDjQ09mnGcNC4GpDnxxxbOhcLnROssYL-sZ_0SJmYydVmMgvrPZ88l85VhVGjNFyCMzgX0pISuZ56veWVNSdEp-RwubwgqwIBkhckyjZACYYwVT5FTviThFCPt1KgF-aJ8C_xU468r6vAh-Z3Q1Qll6qsS8lKpvBf6pL5KPm7HWa9yC9owuTEW1q7hcLWv-dg2P8kV0z2nIrhB_49cr883APRlKm6GVSaLJC9Y"/>
+</div>
+<div>
+<h3 class="font-headline-lg-mobile text-headline-lg-mobile text-on-surface">Vodafone</h3>
+<p class="font-caption text-caption text-on-surface-variant">Evde Fiber Full</p>
+</div>
+</div>
+</div>
+<div class="flex flex-col gap-xs py-md border-y border-outline-variant border-opacity-30">
+<div class="flex justify-between items-baseline">
+<span class="font-metric-xl text-metric-xl text-primary">₺580,00</span>
+<span class="font-caption text-caption text-on-surface-variant">/ ay</span>
+</div>
+<div class="flex items-center gap-sm text-on-surface-variant">
+<span class="material-symbols-outlined text-[16px]">info</span>
+<span class="font-body-sm">Ek kurulum ücreti</span>
+</div>
+</div>
+<div class="flex gap-sm">
+<span class="px-sm py-xs bg-surface-container-highest text-on-surface rounded font-label-uppercase text-label-uppercase">VDSL</span>
+<span class="px-sm py-xs bg-surface-container-highest text-on-surface rounded font-label-uppercase text-label-uppercase">24 Ay Taahhüt</span>
+</div>
+<button class="w-full py-sm border border-outline-variant text-on-surface-variant font-label-uppercase text-label-uppercase rounded-lg hover:border-primary hover:text-primary transition-all active:scale-[0.98]">DETAYLARI GÖR</button>
+</div>
+<!-- Standard Card 2 -->
+<div class="glass-card rounded-xl p-lg flex flex-col gap-md overflow-hidden group transition-all duration-300 hover:-translate-y-1">
+<div class="flex justify-between items-start">
+<div class="flex items-center gap-md">
+<div class="w-12 h-12 bg-white rounded-lg flex items-center justify-center p-xs">
+<img alt="Millenicom" class="object-contain w-full h-full" data-alt="A stylized tech brand logo for an internet service provider, using sleek blue and silver tones on a white backdrop. The logo represents futuristic communication and cloud-based network services. The clean design reflects a modern corporate identity focused on high-performance data delivery." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBGfHM1nbj5csIgiQEZ8peJdBM9Q3aX-y4BERAXPSGj2qTI8AJIlPs1B8Py2RmdXJEXmyuqkXZr1BK2-uTnBsQzG9CfIRD5oVPlmoaCw2T_fBYgauGmg5tLzCKqDEciTMQNi8Hkc7csM9fcErX8pHMu0HztgKjK_8g19OjBEomZs2wDhEUMXY4BYfl6cJUWoq45GRmje2YzNK1wO309v3esH6pubhJrFO3UgTQ46Xo8JYldrtaQInGKXUtnk68iL2QsU2fQyUgsBNQ"/>
+</div>
+<div>
+<h3 class="font-headline-lg-mobile text-headline-lg-mobile text-on-surface">Millenicom</h3>
+<p class="font-caption text-caption text-on-surface-variant">Efsane Fiber</p>
+</div>
+</div>
+</div>
+<div class="flex flex-col gap-xs py-md border-y border-outline-variant border-opacity-30">
+<div class="flex justify-between items-baseline">
+<span class="font-metric-xl text-metric-xl text-primary">₺595,00</span>
+<span class="font-caption text-caption text-on-surface-variant">/ ay</span>
+</div>
+<div class="flex items-center gap-sm text-secondary">
+<span class="material-symbols-outlined text-[16px]">verified</span>
+<span class="font-body-sm">Aktivasyon hediyeli</span>
+</div>
+</div>
+<div class="flex gap-sm">
+<span class="px-sm py-xs bg-surface-container-highest text-on-surface rounded font-label-uppercase text-label-uppercase">Fiber</span>
+<span class="px-sm py-xs bg-surface-container-highest text-on-surface rounded font-label-uppercase text-label-uppercase">Taahhütsüz</span>
+</div>
+<button class="w-full py-sm border border-outline-variant text-on-surface-variant font-label-uppercase text-label-uppercase rounded-lg hover:border-primary hover:text-primary transition-all active:scale-[0.98]">DETAYLARI GÖR</button>
+</div>
+<!-- Standard Card 3 -->
+<div class="glass-card rounded-xl p-lg flex flex-col gap-md overflow-hidden group transition-all duration-300 hover:-translate-y-1">
+<div class="flex justify-between items-start">
+<div class="flex items-center gap-md">
+<div class="w-12 h-12 bg-white rounded-lg flex items-center justify-center p-xs">
+<img alt="D-Smart" class="object-contain w-full h-full" data-alt="A distinctive media and telecommunications logo featuring bold blue and red colors on a white square frame. The aesthetic is clean, professional, and established, conveying a sense of integrated entertainment and connectivity services for a competitive market overview dashboard." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAWW0cb4TDhaRn4T976_6nz4GWQjWmspR0TDEsupTGOLf5C0lJeWDUND-jSWS9d4GHGDHuQjFWfiXgWYXM6zo9p6cggeWPqW5ApsMsUJCkVWi5u3gwH51LdeoNO5Zcyl5vPYX6J_45Arock7VM8Vl_cp1YkMF5YmxwoEIUeerlSe7WkvhJZgVsWVkq1F0Spq62gF-_vQckWoYkd6uWEZP4a1lFPDqvWavT7LD_Onh_PRCw2bycvYMcArYDe_PB4SasidMJWQ_DAKgM"/>
+</div>
+<div>
+<h3 class="font-headline-lg-mobile text-headline-lg-mobile text-on-surface">D-Smart</h3>
+<p class="font-caption text-caption text-on-surface-variant">TV + Fiber Paket</p>
+</div>
+</div>
+</div>
+<div class="flex flex-col gap-xs py-md border-y border-outline-variant border-opacity-30">
+<div class="flex justify-between items-baseline">
+<span class="font-metric-xl text-metric-xl text-primary">₺620,00</span>
+<span class="font-caption text-caption text-on-surface-variant">/ ay</span>
+</div>
+<div class="flex items-center gap-sm text-on-surface-variant">
+<span class="material-symbols-outlined text-[16px]">add_box</span>
+<span class="font-body-sm">TV paketi dahil</span>
+</div>
+</div>
+<div class="flex gap-sm">
+<span class="px-sm py-xs bg-surface-container-highest text-on-surface rounded font-label-uppercase text-label-uppercase">Fiber</span>
+<span class="px-sm py-xs bg-surface-container-highest text-on-surface rounded font-label-uppercase text-label-uppercase">24 Ay Taahhüt</span>
+</div>
+<button class="w-full py-sm border border-outline-variant text-on-surface-variant font-label-uppercase text-label-uppercase rounded-lg hover:border-primary hover:text-primary transition-all active:scale-[0.98]">DETAYLARI GÖR</button>
+</div>
+</div>
+<!-- Detailed Comparison Table (Asymmetric Layout) -->
+<div class="glass-card rounded-xl overflow-hidden mt-xl">
+<div class="p-lg border-b border-outline-variant flex justify-between items-center">
+<h2 class="font-headline-lg text-headline-lg text-on-surface">Teknik Detay Karşılaştırması</h2>
+<button class="flex items-center gap-sm text-primary hover:underline">
+<span class="material-symbols-outlined">download</span>
+<span class="font-label-uppercase text-label-uppercase">RAPORU İNDİR (PDF)</span>
+</button>
+</div>
+<div class="overflow-x-auto">
+<table class="w-full border-collapse">
+<thead>
+<tr class="bg-surface-container-high">
+<th class="text-left p-md font-label-uppercase text-label-uppercase text-on-surface-variant border-b border-outline-variant">Özellik</th>
+<th class="text-center p-md font-label-uppercase text-label-uppercase text-on-surface-variant border-b border-outline-variant">Türk Telekom</th>
+<th class="text-center p-md font-label-uppercase text-label-uppercase text-on-surface-variant border-b border-outline-variant">Turkcell</th>
+<th class="text-center p-md font-label-uppercase text-label-uppercase text-on-surface-variant border-b border-outline-variant">TurkNet</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-outline-variant divide-opacity-30">
+<tr class="hover:bg-surface-container-low transition-colors">
+<td class="p-md font-body-md text-on-surface">İndirme Hızı (Max)</td>
+<td class="p-md text-center text-primary font-bold">100 Mbps</td>
+<td class="p-md text-center text-primary font-bold">100 Mbps</td>
+<td class="p-md text-center text-primary font-bold">100 Mbps</td>
+</tr>
+<tr class="hover:bg-surface-container-low transition-colors">
+<td class="p-md font-body-md text-on-surface">Yükleme Hızı</td>
+<td class="p-md text-center text-on-surface">20 Mbps</td>
+<td class="p-md text-center text-on-surface">20 Mbps</td>
+<td class="p-md text-center text-secondary font-bold">50 Mbps</td>
+</tr>
+<tr class="hover:bg-surface-container-low transition-colors">
+<td class="p-md font-body-md text-on-surface">Kota Durumu</td>
+<td class="p-md text-center text-on-surface">Sınırsız</td>
+<td class="p-md text-center text-on-surface">Sınırsız</td>
+<td class="p-md text-center text-on-surface">Sınırsız</td>
+</tr>
+<tr class="hover:bg-surface-container-low transition-colors">
+<td class="p-md font-body-md text-on-surface">Modem Ücreti</td>
+<td class="p-md text-center text-on-surface">Ücretsiz (Emanet)</td>
+<td class="p-md text-center text-on-surface">Dahil</td>
+<td class="p-md text-center text-on-surface">₺30 / Ay</td>
+</tr>
+<tr class="hover:bg-surface-container-low transition-colors">
+<td class="p-md font-body-md text-on-surface">Ping (Ortalama)</td>
+<td class="p-md text-center text-secondary">8ms</td>
+<td class="p-md text-center text-secondary">6ms</td>
+<td class="p-md text-center text-secondary">4ms</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+</main>
+<script>
+        // Simple micro-interactions
+        document.querySelectorAll('button').forEach(btn => {
+            btn.addEventListener('mouseenter', () => {
+                btn.style.filter = 'brightness(1.2)';
+            });
+            btn.addEventListener('mouseleave', () => {
+                btn.style.filter = 'brightness(1)';
+            });
+        });
+
+        // Dynamic pricing pulse for top cards
+        const pulses = document.querySelectorAll('.gold-border, .silver-border, .bronze-border');
+        pulses.forEach(card => {
+            card.addEventListener('mouseenter', () => {
+                card.style.transform = 'translateY(-8px)';
+                card.style.boxShadow = '0 10px 30px rgba(6, 182, 212, 0.2)';
+            });
+            card.addEventListener('mouseleave', () => {
+                card.style.transform = 'translateY(0)';
+                card.style.boxShadow = '';
+            });
+        });
+    </script>
+</body></html>

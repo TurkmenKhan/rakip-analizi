@@ -1,0 +1,14 @@
+.env
+logs/
+__pycache__/
+*.pyc
+*.pyo
+.patchright/
+.claude/
+PLAN.md
+# Geçici test/fix scriptleri
+test_*.py
+fix_*.py
+add_*.py
+reorder_*.py
+disable_*.py

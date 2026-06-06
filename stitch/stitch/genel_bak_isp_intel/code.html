@@ -1,0 +1,556 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="tr"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&amp;family=Geist:wght@600;700&amp;family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@100..900&amp;family=Inter:wght@100..900&amp;display=swap" rel="stylesheet"/>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #090f11;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #3d494c;
+            border-radius: 10px;
+        }
+        .glass-card {
+            background: rgba(30, 41, 59, 0.7);
+            backdrop-filter: blur(12px);
+            border: 1px solid #334155;
+        }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-secondary-fixed": "#002113",
+                        "inverse-primary": "#00687a",
+                        "surface-container": "#1b2122",
+                        "inverse-on-surface": "#2b3133",
+                        "on-primary-container": "#00424f",
+                        "outline-variant": "#3d494c",
+                        "surface": "#0e1416",
+                        "error-container": "#93000a",
+                        "outline": "#869397",
+                        "on-tertiary-container": "#7e000f",
+                        "on-secondary-fixed-variant": "#005236",
+                        "secondary-container": "#00a572",
+                        "surface-container-low": "#171d1e",
+                        "on-primary": "#003640",
+                        "tertiary-container": "#ff817a",
+                        "on-background": "#dee3e6",
+                        "surface-container-highest": "#303638",
+                        "tertiary-fixed-dim": "#ffb3ad",
+                        "secondary-fixed": "#6ffbbe",
+                        "background": "#0e1416",
+                        "on-surface-variant": "#bcc9cd",
+                        "surface-container-highest": "#303638",
+                        "primary-container": "#06b6d4",
+                        "primary-fixed-dim": "#4cd7f6",
+                        "on-error": "#690005",
+                        "primary": "#4cd7f6",
+                        "on-primary-fixed-variant": "#004e5c",
+                        "secondary": "#4edea3",
+                        "surface-variant": "#303638",
+                        "on-tertiary-fixed": "#410004",
+                        "on-tertiary-fixed-variant": "#930013",
+                        "on-error-container": "#ffdad6",
+                        "surface-container-high": "#252b2d",
+                        "surface-dim": "#0e1416",
+                        "inverse-surface": "#dee3e6",
+                        "tertiary-fixed": "#ffdad7",
+                        "primary-fixed": "#acedff",
+                        "secondary-fixed-dim": "#4edea3",
+                        "surface-tint": "#4cd7f6",
+                        "surface-bright": "#343a3c",
+                        "error": "#ffb4ab",
+                        "on-surface": "#dee3e6",
+                        "on-secondary-container": "#00311f",
+                        "on-secondary": "#003824",
+                        "tertiary": "#ffb3ad",
+                        "on-primary-fixed": "#001f26",
+                        "on-tertiary": "#68000a"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "spacing": {
+                        "xs": "4px",
+                        "lg": "24px",
+                        "md": "16px",
+                        "xl": "32px",
+                        "margin-desktop": "32px",
+                        "margin-mobile": "16px",
+                        "sm": "8px",
+                        "gutter": "16px",
+                        "base": "4px"
+                    },
+                    "fontFamily": {
+                        "display-lg": ["Geist"],
+                        "metric-xl": ["Geist"],
+                        "caption": ["Inter"],
+                        "body-md": ["Inter"],
+                        "label-uppercase": ["Inter"],
+                        "body-sm": ["Inter"],
+                        "body-lg": ["Inter"],
+                        "headline-lg": ["Geist"],
+                        "headline-lg-mobile": ["Geist"]
+                    },
+                    "fontSize": {
+                        "display-lg": ["48px", {"lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                        "metric-xl": ["36px", {"lineHeight": "44px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                        "caption": ["12px", {"lineHeight": "16px", "fontWeight": "400"}],
+                        "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                        "label-uppercase": ["12px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "600"}],
+                        "body-sm": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                        "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}],
+                        "headline-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                        "headline-lg-mobile": ["24px", {"lineHeight": "32px", "fontWeight": "600"}]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background text-on-surface font-body-md selection:bg-primary-container selection:text-on-primary-container">
+<!-- Navigation Drawer -->
+<aside class="w-72 h-full fixed left-0 top-0 border-r border-outline-variant bg-surface flex flex-col h-screen py-md z-50">
+<div class="px-lg mb-xl">
+<span class="text-headline-lg font-headline-lg font-bold text-primary">ISP INTEL</span>
+</div>
+<nav class="flex-1 space-y-1">
+<a class="flex items-center gap-md py-sm px-md bg-secondary-container text-on-secondary-container rounded-lg mx-2 transition-all duration-200 active:scale-[0.98]" href="#">
+<span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>
+<span class="font-body-md">GENEL BAKIŞ</span>
+</a>
+<a class="flex items-center gap-md py-sm px-md text-on-surface-variant hover:bg-surface-container-high mx-2 rounded-lg transition-colors duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="compare_arrows">compare_arrows</span>
+<span class="font-body-md">KARŞILAŞTIRMA</span>
+</a>
+<a class="flex items-center gap-md py-sm px-md text-on-surface-variant hover:bg-surface-container-high mx-2 rounded-lg transition-colors duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="table_rows">table_rows</span>
+<span class="font-body-md">TÜM PAKETLER</span>
+</a>
+<a class="flex items-center gap-md py-sm px-md text-on-surface-variant hover:bg-surface-container-high mx-2 rounded-lg transition-colors duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="corporate_fare">corporate_fare</span>
+<span class="font-body-md">ISS PROFİLİ</span>
+</a>
+<a class="flex items-center gap-md py-sm px-md text-on-surface-variant hover:bg-surface-container-high mx-2 rounded-lg transition-colors duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="notifications">notifications</span>
+<span class="font-body-md">BİLDİRİMLER</span>
+</a>
+<a class="flex items-center gap-md py-sm px-md text-on-surface-variant hover:bg-surface-container-high mx-2 rounded-lg transition-colors duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="show_chart">show_chart</span>
+<span class="font-body-md">FİYAT TRENDİ</span>
+</a>
+</nav>
+<div class="px-md mt-auto pt-md border-t border-outline-variant/30">
+<div class="flex items-center gap-md p-sm text-on-surface-variant">
+<div class="w-10 h-10 rounded-full bg-surface-container-highest flex items-center justify-center border border-outline-variant">
+<span class="material-symbols-outlined" data-icon="account_circle">account_circle</span>
+</div>
+<div>
+<p class="font-body-sm font-bold">Analist Girişi</p>
+<p class="text-caption">Sistem Hazır</p>
+</div>
+</div>
+</div>
+</aside>
+<!-- Main Content Canvas -->
+<main class="ml-72 min-h-screen flex flex-col">
+<!-- Top App Bar -->
+<header class="flex justify-between items-center w-full px-lg h-16 bg-surface-container border-b border-outline-variant z-40 sticky top-0">
+<div class="flex items-center gap-md">
+<span class="material-symbols-outlined text-primary cursor-pointer" data-icon="menu">menu</span>
+<h1 class="font-headline-lg text-headline-lg text-primary">GENEL BAKIŞ</h1>
+</div>
+<div class="flex items-center gap-lg">
+<div class="relative group">
+<span class="material-symbols-outlined text-on-surface-variant group-hover:text-primary transition-colors cursor-pointer" data-icon="search">search</span>
+</div>
+<div class="flex items-center gap-sm bg-surface-container-high px-md py-1 rounded-full border border-outline-variant">
+<div class="w-2 h-2 rounded-full bg-secondary shadow-[0_0_8px_rgba(78,222,163,0.5)]"></div>
+<span class="text-caption font-bold text-on-surface-variant uppercase tracking-wider">Canlı İzleme</span>
+</div>
+<div class="w-10 h-10 rounded-full bg-primary-container flex items-center justify-center text-on-primary-container font-bold overflow-hidden border border-outline">
+<img alt="User" class="w-full h-full object-cover" data-alt="A professional headshot of a middle-aged male data analyst with a focused expression. He is wearing a dark navy blazer over a clean white shirt. The background is a slightly blurred modern corporate office with cool-toned lighting and minimalist grey furniture. The overall aesthetic is high-end, clean, and professional." src="https://lh3.googleusercontent.com/aida-public/AB6AXuC4eijAzWtzNCs7q-I7fhd4kTnHPjdGQ7lk83e-FohS4YsCoxgwwcpQvbRPTwVkTw2xxOBotXExi5zTifj6U0bUoPwPrmNDCTlByJaS0mbLjQYNhwOwJV0u0COTn-CfSWGhxZ8lwvao9dDT9iwLR8cf8tsY9lHi5fC2xC6hv9jTAujaK8wOa4270_5OqAxvRyypOPCjrNgSFosRf-536KM6PRHJGK_b5Jenlza5zAGQSCSp90x6MgBBi4qUHGui10iFlSEqPGbP2es"/>
+</div>
+</div>
+</header>
+<!-- Content Area -->
+<div class="p-lg space-y-lg">
+<!-- Metric Cards -->
+<div class="grid grid-cols-5 gap-md">
+<!-- Card 1 -->
+<div class="p-md rounded-xl bg-surface-container border border-outline-variant hover:border-primary/50 transition-colors">
+<p class="text-caption font-label-uppercase text-on-surface-variant mb-xs">TOPLAM ISS</p>
+<div class="flex items-end justify-between">
+<span class="font-metric-xl text-metric-xl text-on-surface">128</span>
+<span class="material-symbols-outlined text-primary mb-1" data-icon="hub">hub</span>
+</div>
+</div>
+<!-- Card 2 -->
+<div class="p-md rounded-xl bg-surface-container border border-outline-variant hover:border-primary/50 transition-colors">
+<p class="text-caption font-label-uppercase text-on-surface-variant mb-xs">TOPLAM PAKET</p>
+<div class="flex items-end justify-between">
+<span class="font-metric-xl text-metric-xl text-on-surface">2,405</span>
+<span class="material-symbols-outlined text-primary mb-1" data-icon="inventory_2">inventory_2</span>
+</div>
+</div>
+<!-- Card 3 -->
+<div class="p-md rounded-xl bg-surface-container border border-outline-variant hover:border-primary/50 transition-colors relative overflow-hidden">
+<p class="text-caption font-label-uppercase text-on-surface-variant mb-xs">BİLDİRİMLER</p>
+<div class="flex items-end justify-between">
+<span class="font-metric-xl text-metric-xl text-on-surface">12</span>
+<span class="material-symbols-outlined text-tertiary mb-1" data-icon="mark_email_unread">mark_email_unread</span>
+</div>
+<div class="absolute top-0 right-0 w-12 h-12 bg-tertiary/10 rotate-45 translate-x-6 -translate-y-6"></div>
+</div>
+<!-- Card 4 -->
+<div class="p-md rounded-xl bg-surface-container border border-outline-variant hover:border-primary/50 transition-colors">
+<p class="text-caption font-label-uppercase text-on-surface-variant mb-xs">BUGÜN DEĞİŞEN</p>
+<div class="flex items-end justify-between">
+<div class="flex items-center gap-xs">
+<span class="font-metric-xl text-metric-xl text-secondary">8</span>
+<span class="material-symbols-outlined text-secondary text-[20px]" data-icon="trending_up">trending_up</span>
+</div>
+<span class="material-symbols-outlined text-on-surface-variant mb-1" data-icon="update">update</span>
+</div>
+</div>
+<!-- Card 5 -->
+<div class="p-md rounded-xl bg-surface-container border border-outline-variant hover:border-primary/50 transition-colors">
+<p class="text-caption font-label-uppercase text-on-surface-variant mb-xs">SON KONTROL</p>
+<div class="flex items-end justify-between">
+<span class="font-metric-xl text-metric-xl text-on-surface">14:30</span>
+<span class="material-symbols-outlined text-on-surface-variant mb-1" data-icon="timer">timer</span>
+</div>
+</div>
+</div>
+<!-- Bento Middle Row -->
+<div class="grid grid-cols-12 gap-lg">
+<!-- Scatter Chart Visualization -->
+<div class="col-span-8 p-lg rounded-xl bg-surface-container border border-outline-variant relative overflow-hidden group">
+<div class="flex items-center justify-between mb-xl">
+<div>
+<h3 class="font-headline-lg text-body-lg font-bold text-on-surface">Hız &amp; Fiyat Dağılımı</h3>
+<p class="text-caption text-on-surface-variant">Piyasadaki tüm aktif paketlerin Mbps başı maliyet analizi</p>
+</div>
+<div class="flex gap-sm">
+<button class="px-md py-1 text-caption font-bold bg-surface-container-high border border-outline-variant rounded-full text-on-surface-variant">FİLTRELE</button>
+<button class="px-md py-1 text-caption font-bold bg-primary-container text-on-primary-container rounded-full">DETAYLAR</button>
+</div>
+</div>
+<!-- SVG Chart Mockup -->
+<div class="relative h-[300px] w-full border-l border-b border-outline-variant/30 mt-md">
+<!-- Y-Axis (Fiyat TL) -->
+<div class="absolute -left-12 top-0 h-full flex flex-col justify-between text-caption text-on-surface-variant py-2">
+<span>2000 TL</span>
+<span>1500 TL</span>
+<span>1000 TL</span>
+<span>500 TL</span>
+<span>0 TL</span>
+</div>
+<!-- X-Axis (Hız Mbps) -->
+<div class="absolute -bottom-8 left-0 w-full flex justify-between text-caption text-on-surface-variant px-2">
+<span>0 Mbps</span>
+<span>200 Mbps</span>
+<span>400 Mbps</span>
+<span>600 Mbps</span>
+<span>800 Mbps</span>
+<span>1000 Mbps</span>
+</div>
+<!-- Chart Grid lines -->
+<div class="absolute inset-0 grid grid-cols-5 grid-rows-4 pointer-events-none">
+<div class="border-r border-t border-outline-variant/10"></div><div class="border-r border-t border-outline-variant/10"></div><div class="border-r border-t border-outline-variant/10"></div><div class="border-r border-t border-outline-variant/10"></div><div class="border-t border-outline-variant/10"></div>
+<div class="border-r border-t border-outline-variant/10"></div><div class="border-r border-t border-outline-variant/10"></div><div class="border-r border-t border-outline-variant/10"></div><div class="border-r border-t border-outline-variant/10"></div><div class="border-t border-outline-variant/10"></div>
+<div class="border-r border-t border-outline-variant/10"></div><div class="border-r border-t border-outline-variant/10"></div><div class="border-r border-t border-outline-variant/10"></div><div class="border-r border-t border-outline-variant/10"></div><div class="border-t border-outline-variant/10"></div>
+<div class="border-r border-t border-outline-variant/10"></div><div class="border-r border-t border-outline-variant/10"></div><div class="border-r border-t border-outline-variant/10"></div><div class="border-r border-t border-outline-variant/10"></div><div class="border-t border-outline-variant/10"></div>
+</div>
+<!-- Scatter Points -->
+<div class="absolute bottom-[20%] left-[5%] w-3 h-3 bg-primary rounded-full blur-[2px] opacity-80 animate-pulse"></div>
+<div class="absolute bottom-[25%] left-[12%] w-3 h-3 bg-secondary rounded-full blur-[1px] opacity-70"></div>
+<div class="absolute bottom-[35%] left-[35%] w-2 h-2 bg-primary-container rounded-full"></div>
+<div class="absolute bottom-[40%] left-[50%] w-4 h-4 bg-tertiary rounded-full opacity-60"></div>
+<div class="absolute bottom-[60%] left-[80%] w-3 h-3 bg-primary rounded-full blur-[1px]"></div>
+<div class="absolute bottom-[75%] left-[92%] w-3 h-3 bg-secondary rounded-full"></div>
+<!-- Trend Line -->
+<svg class="absolute inset-0 w-full h-full pointer-events-none" preserveaspectratio="none">
+<path d="M 0 300 Q 400 150 1000 80" fill="none" opacity="0.4" stroke="#06b6d4" stroke-width="2"></path>
+</svg>
+</div>
+</div>
+<!-- Price Range Vertical List -->
+<div class="col-span-4 p-lg rounded-xl bg-surface-container border border-outline-variant">
+<h3 class="font-headline-lg text-body-lg font-bold text-on-surface mb-lg">Hız Kırılım Analizi (TL)</h3>
+<div class="space-y-md">
+<!-- 16 Mbps -->
+<div class="space-y-xs">
+<div class="flex justify-between text-caption font-bold">
+<span class="text-on-surface">16 Mbps</span>
+<span class="text-on-surface-variant">Min: 140 | Max: 220</span>
+</div>
+<div class="h-2 w-full bg-surface-container-highest rounded-full relative overflow-hidden">
+<div class="absolute left-[15%] right-[25%] h-full bg-primary-container/40 rounded-full"></div>
+<div class="absolute left-[40%] top-1/2 -translate-y-1/2 w-2 h-2 bg-primary rounded-full shadow-[0_0_5px_#4cd7f6]"></div>
+</div>
+</div>
+<!-- 35 Mbps -->
+<div class="space-y-xs">
+<div class="flex justify-between text-caption font-bold">
+<span class="text-on-surface">35 Mbps</span>
+<span class="text-on-surface-variant">Min: 180 | Max: 290</span>
+</div>
+<div class="h-2 w-full bg-surface-container-highest rounded-full relative overflow-hidden">
+<div class="absolute left-[20%] right-[30%] h-full bg-primary-container/40 rounded-full"></div>
+<div class="absolute left-[45%] top-1/2 -translate-y-1/2 w-2 h-2 bg-primary rounded-full shadow-[0_0_5px_#4cd7f6]"></div>
+</div>
+</div>
+<!-- 50 Mbps -->
+<div class="space-y-xs">
+<div class="flex justify-between text-caption font-bold">
+<span class="text-on-surface">50 Mbps</span>
+<span class="text-on-surface-variant">Min: 220 | Max: 350</span>
+</div>
+<div class="h-2 w-full bg-surface-container-highest rounded-full relative overflow-hidden">
+<div class="absolute left-[25%] right-[35%] h-full bg-primary-container/40 rounded-full"></div>
+<div class="absolute left-[52%] top-1/2 -translate-y-1/2 w-2 h-2 bg-primary rounded-full shadow-[0_0_5px_#4cd7f6]"></div>
+</div>
+</div>
+<!-- 100 Mbps -->
+<div class="space-y-xs">
+<div class="flex justify-between text-caption font-bold">
+<span class="text-on-surface">100 Mbps</span>
+<span class="text-on-surface-variant">Min: 290 | Max: 500</span>
+</div>
+<div class="h-2 w-full bg-surface-container-highest rounded-full relative overflow-hidden">
+<div class="absolute left-[30%] right-[20%] h-full bg-primary-container/40 rounded-full"></div>
+<div class="absolute left-[60%] top-1/2 -translate-y-1/2 w-2 h-2 bg-primary rounded-full shadow-[0_0_5px_#4cd7f6]"></div>
+</div>
+</div>
+<!-- 200 Mbps -->
+<div class="space-y-xs">
+<div class="flex justify-between text-caption font-bold">
+<span class="text-on-surface">200 Mbps</span>
+<span class="text-on-surface-variant">Min: 450 | Max: 800</span>
+</div>
+<div class="h-2 w-full bg-surface-container-highest rounded-full relative overflow-hidden">
+<div class="absolute left-[35%] right-[15%] h-full bg-primary-container/40 rounded-full"></div>
+<div class="absolute left-[58%] top-1/2 -translate-y-1/2 w-2 h-2 bg-primary rounded-full shadow-[0_0_5px_#4cd7f6]"></div>
+</div>
+</div>
+<!-- 500 Mbps -->
+<div class="space-y-xs">
+<div class="flex justify-between text-caption font-bold">
+<span class="text-on-surface">500 Mbps</span>
+<span class="text-on-surface-variant">Min: 600 | Max: 1200</span>
+</div>
+<div class="h-2 w-full bg-surface-container-highest rounded-full relative overflow-hidden">
+<div class="absolute left-[40%] right-[10%] h-full bg-primary-container/40 rounded-full"></div>
+<div class="absolute left-[65%] top-1/2 -translate-y-1/2 w-2 h-2 bg-primary rounded-full shadow-[0_0_5px_#4cd7f6]"></div>
+</div>
+</div>
+<!-- 1000 Mbps -->
+<div class="space-y-xs">
+<div class="flex justify-between text-caption font-bold">
+<span class="text-on-surface">1000 Mbps</span>
+<span class="text-on-surface-variant">Min: 900 | Max: 2000</span>
+</div>
+<div class="h-2 w-full bg-surface-container-highest rounded-full relative overflow-hidden">
+<div class="absolute left-[50%] right-[5%] h-full bg-primary-container/40 rounded-full"></div>
+<div class="absolute left-[75%] top-1/2 -translate-y-1/2 w-2 h-2 bg-primary rounded-full shadow-[0_0_5px_#4cd7f6]"></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Alert Feed Section -->
+<div class="p-lg rounded-xl bg-surface-container border border-outline-variant">
+<div class="flex items-center justify-between mb-md">
+<h3 class="font-headline-lg text-body-lg font-bold text-on-surface flex items-center gap-sm">
+<span class="material-symbols-outlined text-tertiary" data-icon="bolt">bolt</span>
+                        Son Fiyat Hareketleri
+                    </h3>
+<span class="text-caption text-on-surface-variant hover:text-primary cursor-pointer">Tümünü Gör</span>
+</div>
+<div class="grid grid-cols-2 gap-x-lg gap-y-sm">
+<!-- Alert 1 (Drop) -->
+<div class="flex items-center justify-between p-sm border-b border-outline-variant/30 hover:bg-surface-container-high transition-colors">
+<div class="flex items-center gap-md">
+<div class="p-xs bg-secondary/10 rounded">
+<span class="material-symbols-outlined text-secondary text-sm" data-icon="south_east">south_east</span>
+</div>
+<div>
+<p class="text-body-sm font-bold">TurkNet - 100 Mbps GigaFiber</p>
+<p class="text-caption text-on-surface-variant">Kampanyalı fiyat güncellemesi</p>
+</div>
+</div>
+<div class="text-right">
+<p class="text-body-sm font-bold text-secondary">-40.00 TL</p>
+<p class="text-caption text-on-surface-variant">2 dk önce</p>
+</div>
+</div>
+<!-- Alert 2 (Rise) -->
+<div class="flex items-center justify-between p-sm border-b border-outline-variant/30 hover:bg-surface-container-high transition-colors">
+<div class="flex items-center gap-md">
+<div class="p-xs bg-error/10 rounded">
+<span class="material-symbols-outlined text-error text-sm" data-icon="north_east">north_east</span>
+</div>
+<div>
+<p class="text-body-sm font-bold">Millenicom - 35 Mbps VDSL</p>
+<p class="text-caption text-on-surface-variant">Taban fiyat revizyonu</p>
+</div>
+</div>
+<div class="text-right">
+<p class="text-body-sm font-bold text-error">+15.00 TL</p>
+<p class="text-caption text-on-surface-variant">14 dk önce</p>
+</div>
+</div>
+<!-- Alert 3 -->
+<div class="flex items-center justify-between p-sm border-b border-outline-variant/30 hover:bg-surface-container-high transition-colors">
+<div class="flex items-center gap-md">
+<div class="p-xs bg-secondary/10 rounded">
+<span class="material-symbols-outlined text-secondary text-sm" data-icon="south_east">south_east</span>
+</div>
+<div>
+<p class="text-body-sm font-bold">FixNet - 500 Mbps Fiber</p>
+<p class="text-caption text-on-surface-variant">Yaz sonu indirimi</p>
+</div>
+</div>
+<div class="text-right">
+<p class="text-body-sm font-bold text-secondary">-25.00 TL</p>
+<p class="text-caption text-on-surface-variant">45 dk önce</p>
+</div>
+</div>
+<!-- Alert 4 -->
+<div class="flex items-center justify-between p-sm border-b border-outline-variant/30 hover:bg-surface-container-high transition-colors">
+<div class="flex items-center gap-md">
+<div class="p-xs bg-error/10 rounded">
+<span class="material-symbols-outlined text-error text-sm" data-icon="north_east">north_east</span>
+</div>
+<div>
+<p class="text-body-sm font-bold">Superonline - Gamer Paketi</p>
+<p class="text-caption text-on-surface-variant">Kota aşım ek ücret zammı</p>
+</div>
+</div>
+<div class="text-right">
+<p class="text-body-sm font-bold text-error">+55.00 TL</p>
+<p class="text-caption text-on-surface-variant">1 saat önce</p>
+</div>
+</div>
+<!-- Alert 5 -->
+<div class="flex items-center justify-between p-sm border-b border-outline-variant/30 hover:bg-surface-container-high transition-colors">
+<div class="flex items-center gap-md">
+<div class="p-xs bg-secondary/10 rounded">
+<span class="material-symbols-outlined text-secondary text-sm" data-icon="south_east">south_east</span>
+</div>
+<div>
+<p class="text-body-sm font-bold">Netspeed - 100 Mbps</p>
+<p class="text-caption text-on-surface-variant">Referans indirimi aktif</p>
+</div>
+</div>
+<div class="text-right">
+<p class="text-body-sm font-bold text-secondary">-10.00 TL</p>
+<p class="text-caption text-on-surface-variant">2 saat önce</p>
+</div>
+</div>
+<!-- Alert 6 -->
+<div class="flex items-center justify-between p-sm border-b border-outline-variant/30 hover:bg-surface-container-high transition-colors">
+<div class="flex items-center gap-md">
+<div class="p-xs bg-error/10 rounded">
+<span class="material-symbols-outlined text-error text-sm" data-icon="north_east">north_east</span>
+</div>
+<div>
+<p class="text-body-sm font-bold">Vodafone - Red Box 150GB</p>
+<p class="text-caption text-on-surface-variant">Port kira bedeli artışı</p>
+</div>
+</div>
+<div class="text-right">
+<p class="text-body-sm font-bold text-error">+30.00 TL</p>
+<p class="text-caption text-on-surface-variant">3 saat önce</p>
+</div>
+</div>
+<!-- Alert 7 -->
+<div class="flex items-center justify-between p-sm border-b border-outline-variant/30 hover:bg-surface-container-high transition-colors">
+<div class="flex items-center gap-md">
+<div class="p-xs bg-secondary/10 rounded">
+<span class="material-symbols-outlined text-secondary text-sm" data-icon="south_east">south_east</span>
+</div>
+<div>
+<p class="text-body-sm font-bold">Türk Telekom - Özgürce 200</p>
+<p class="text-caption text-on-surface-variant">Genç paket indirimi</p>
+</div>
+</div>
+<div class="text-right">
+<p class="text-body-sm font-bold text-secondary">-15.00 TL</p>
+<p class="text-caption text-on-surface-variant">5 saat önce</p>
+</div>
+</div>
+<!-- Alert 8 -->
+<div class="flex items-center justify-between p-sm border-b border-outline-variant/30 hover:bg-surface-container-high transition-colors">
+<div class="flex items-center gap-md">
+<div class="p-xs bg-error/10 rounded">
+<span class="material-symbols-outlined text-error text-sm" data-icon="north_east">north_east</span>
+</div>
+<div>
+<p class="text-body-sm font-bold">Comnet - Yıllık Ödeme</p>
+<p class="text-caption text-on-surface-variant">Toptan fiyat güncellemesi</p>
+</div>
+</div>
+<div class="text-right">
+<p class="text-body-sm font-bold text-error">+120.00 TL</p>
+<p class="text-caption text-on-surface-variant">6 saat önce</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Footer / System Stats -->
+<footer class="mt-auto px-lg py-md border-t border-outline-variant/20 flex justify-between items-center text-caption text-on-surface-variant">
+<p>© 2024 ISP INTEL - Türkiye Geneli Veri Analiz Platformu</p>
+<div class="flex gap-lg">
+<span class="flex items-center gap-xs"><div class="w-1.5 h-1.5 rounded-full bg-secondary"></div> API Stabil: %99.9</span>
+<span class="flex items-center gap-xs"><div class="w-1.5 h-1.5 rounded-full bg-secondary"></div> Gecikme: 45ms</span>
+</div>
+</footer>
+</main>
+<!-- FAB Tooltip Logic Placeholder -->
+<div class="fixed bottom-lg right-lg group">
+<button class="w-14 h-14 bg-primary-container text-on-primary-container rounded-full shadow-lg flex items-center justify-center hover:scale-105 active:scale-95 transition-all">
+<span class="material-symbols-outlined" data-icon="download">download</span>
+</button>
+<div class="absolute bottom-16 right-0 bg-surface-container-high text-on-surface px-md py-1 rounded border border-outline-variant opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap text-caption pointer-events-none">
+            Raporu Dışa Aktar (.xlsx)
+        </div>
+</div>
+<script>
+        // Simple Interaction logic
+        document.querySelectorAll('nav a').forEach(link => {
+            link.addEventListener('click', function(e) {
+                document.querySelectorAll('nav a').forEach(l => {
+                    l.classList.remove('bg-secondary-container', 'text-on-secondary-container');
+                    l.classList.add('text-on-surface-variant', 'hover:bg-surface-container-high');
+                });
+                this.classList.add('bg-secondary-container', 'text-on-secondary-container');
+                this.classList.remove('text-on-surface-variant', 'hover:bg-surface-container-high');
+            });
+        });
+    </script>
+</body></html>
