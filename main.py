@@ -20,7 +20,7 @@ from concurrent.futures import ThreadPoolExecutor, as_completed
 from db import (
     get_active_isps, get_isp_url_selectors_with_cd,
     get_last_parsed_ts, update_last_parsed_ts,
-    update_url_last_parsed_ts,
+    update_url_last_parsed_ts, update_last_run_ts,
     save_snapshot, add_alert, mark_packages_inactive,
 )
 from llm_parser              import parse_with_llm, map_pkg_with_url
@@ -212,6 +212,7 @@ def run_once(sadece_rakip: bool = False):
         f"=== Kontrol bitti — {kontrol} kontrol, {degisim} değişim, "
         f"{llm_cagri} LLM çağrısı, {hata} hata ==="
     )
+    update_last_run_ts()
     push_db_to_github()
 
 

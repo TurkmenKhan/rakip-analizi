@@ -627,7 +627,7 @@ def get_stats(kategoriler: tuple = ()) -> dict:
         s["toplam_iss"]    = q(f"SELECT COUNT(DISTINCT p.isp_id) FROM packages p JOIN isps i ON i.id=p.isp_id WHERE p.aktif=1 AND i.aktif=1 AND i.kategori IN ({ph})", k)
         s["toplam_paket"]  = q(f"SELECT COUNT(*) FROM packages p JOIN isps i ON i.id=p.isp_id WHERE p.aktif=1 AND i.aktif=1 AND i.kategori IN ({ph})", k)
         s["yeni_alert"]    = q(f"SELECT COUNT(*) FROM alerts a JOIN isps i ON i.id=a.isp_id WHERE a.goruldu=0 AND i.kategori IN ({ph})", k)
-        s["son_kontrol"]   = q(f"SELECT datetime(MAX(u.last_parsed_ts),'unixepoch','localtime') FROM isp_urls u JOIN isps i ON i.id=u.isp_id WHERE i.aktif=1 AND i.kategori IN ({ph})", k) or "—"
+        s["son_kontrol"]   = q("SELECT value FROM meta WHERE key='last_run_ts'") or "—"
         s["degisim_bugun"] = q(f"SELECT COUNT(DISTINCT ph.isp_id) FROM package_history ph JOIN isps i ON i.id=ph.isp_id WHERE date(ph.degisim_zamani)=date('now','localtime') AND i.kategori IN ({ph})", k)
         for tur, key in [("fiyat_dustu","fiyat_dustu_7g"),("fiyat_yukseldi","fiyat_yukseldi_7g"),
                          ("yeni_paket","yeni_paket_7g"),("paket_kaldirildi","paket_kaldi_7g")]:
@@ -636,7 +636,7 @@ def get_stats(kategoriler: tuple = ()) -> dict:
         s["toplam_iss"]    = q("SELECT COUNT(DISTINCT isp_id) FROM packages WHERE aktif=1")
         s["toplam_paket"]  = q("SELECT COUNT(*) FROM packages WHERE aktif=1")
         s["yeni_alert"]    = q("SELECT COUNT(*) FROM alerts WHERE goruldu=0")
-        s["son_kontrol"]   = q("SELECT datetime(MAX(u.last_parsed_ts),'unixepoch','localtime') FROM isp_urls u JOIN isps i ON i.id=u.isp_id WHERE i.aktif=1") or "—"
+        s["son_kontrol"]   = q("SELECT value FROM meta WHERE key='last_run_ts'") or "—"
         s["degisim_bugun"] = q("SELECT COUNT(DISTINCT isp_id) FROM package_history WHERE date(degisim_zamani)=date('now','localtime')")
         for tur, key in [("fiyat_dustu","fiyat_dustu_7g"),("fiyat_yukseldi","fiyat_yukseldi_7g"),
                          ("yeni_paket","yeni_paket_7g"),("paket_kaldirildi","paket_kaldi_7g")]:

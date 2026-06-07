@@ -184,6 +184,19 @@ def update_url_last_parsed_ts(url_id: int, ts: int):
     conn.close()
 
 
+def update_last_run_ts():
+    """Her bot turu sonunda çağrılır — dashboard 'Son Kontrol' için kullanır."""
+    conn = get_conn()
+    conn.execute("""
+        CREATE TABLE IF NOT EXISTS meta (key TEXT PRIMARY KEY, value TEXT)
+    """)
+    conn.execute(
+        "INSERT OR REPLACE INTO meta (key, value) VALUES ('last_run_ts', datetime('now','localtime'))"
+    )
+    conn.commit()
+    conn.close()
+
+
 def add_isp_url(isp_name: str, url: str, etiket: str = None):
     conn = get_conn()
     isp = conn.execute("SELECT id FROM isps WHERE name=?", (isp_name,)).fetchone()
