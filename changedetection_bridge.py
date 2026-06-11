@@ -20,7 +20,7 @@ import requests
 from requests.adapters import HTTPAdapter
 
 CD_BASE_URL = os.environ.get("CD_BASE_URL", "http://localhost:5000")
-CD_API_KEY  = os.environ.get("CD_API_KEY",  "94953b40b50ba1361b9ae457b52bfb93")
+CD_API_KEY  = os.environ.get("CD_API_KEY",  "9f27a45aed03c826410dc5be255db03b")
 
 _TIMEOUT     = 20   # saniye
 _POOL_SIZE   = 20   # max paralel bağlantı
