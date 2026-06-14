@@ -217,35 +217,62 @@ h1,h2,h3,h4 { color: #f8fafc !important; }
   background: rgba(76,215,246,0.08) !important;
 }
 
-/* ── SELECTBOX / INPUTS ── */
-[data-baseweb="select"] > div {
+/* ── SELECTBOX / MULTISELECT ── */
+/* Tetikleyici kutu */
+[data-baseweb="select"] > div,
+[data-baseweb="select"] > div:focus-within {
   background: #0d1520 !important; border-color: #1e2d3d !important;
   color: #e2e8f0 !important;
 }
-/* Dropdown popup arka planı */
-[data-baseweb="popover"] { background: #0d1520 !important; }
-[data-baseweb="popover"] > div { background: #0f1a26 !important; }
-[data-baseweb="menu"] {
-  background: #0f1a26 !important; border: 1px solid #1e2d3d !important;
-  box-shadow: 0 8px 24px rgba(0,0,0,0.5) !important;
+[data-baseweb="select"] span,
+[data-baseweb="select"] div { color: #e2e8f0 !important; }
+[data-baseweb="select"] input { color: #e2e8f0 !important; background: transparent !important; }
+[data-baseweb="tag"] { background: rgba(76,215,246,0.15) !important; color: #4cd7f6 !important; }
+
+/* ── DROPDOWN PORTAL (body'e doğrudan açılır) ── */
+[data-baseweb="popover"],
+[data-baseweb="popover"] > div,
+[data-baseweb="popover"] > div > div {
+  background: #0f1a26 !important;
+  border: 1px solid #1e2d3d !important;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.7) !important;
 }
-[data-baseweb="menu"] ul { background: #0f1a26 !important; }
-[data-baseweb="option"] {
-  background: #0f1a26 !important; color: #94a3b8 !important;
+[data-baseweb="menu"],
+[data-baseweb="menu"] > div,
+[data-baseweb="menu"] ul {
+  background: #0f1a26 !important;
+  border: none !important;
+}
+/* Her seçenek */
+[role="option"] {
+  background: #0f1a26 !important;
+  color: #94a3b8 !important;
   font-size: 13px !important;
 }
-[data-baseweb="option"]:hover,
-[data-baseweb="option"][aria-selected="true"] {
-  background: #1a2d3d !important; color: #e2e8f0 !important;
+[role="option"]:hover,
+[role="option"]:focus,
+[aria-selected="true"][role="option"] {
+  background: #1a2d3d !important;
+  color: #e2e8f0 !important;
 }
-/* Dropdown'ın tetikleyici input alanı */
-[data-baseweb="select"] [data-testid="stSelectbox"],
-[data-baseweb="select"] input {
-  color: #e2e8f0 !important; background: transparent !important;
+/* Listbox container */
+[role="listbox"] {
+  background: #0f1a26 !important;
 }
-/* Seçili değer metni */
-[data-baseweb="select"] [data-baseweb="tag"],
-[data-baseweb="select"] span { color: #e2e8f0 !important; }
+/* Multiselect arama input'u */
+[data-baseweb="popover"] input,
+[data-baseweb="popover"] input::placeholder {
+  background: #0f1a26 !important;
+  color: #64748b !important;
+}
+/* Slider */
+[data-testid="stSlider"] [role="slider"] { background: #4cd7f6 !important; }
+[data-testid="stSlider"] [data-testid="stTickBar"] { color: #64748b !important; }
+/* Text input */
+[data-testid="stTextInput"] input {
+  background: #0d1520 !important; border-color: #1e2d3d !important;
+  color: #e2e8f0 !important;
+}
 [data-testid="stTextInput"] input {
   background: #0d1520 !important; border-color: #1e2d3d !important;
   color: #e2e8f0 !important;
