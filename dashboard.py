@@ -206,14 +206,46 @@ h1,h2,h3,h4 { color: #f8fafc !important; }
 /* ── CHARTS ── */
 .vega-embed { background: transparent !important; }
 
+/* ── BUTTONS (global) ── */
+.stButton button {
+  background: #0f1d2a !important; border: 1px solid #1e2d3d !important;
+  color: #94a3b8 !important; border-radius: 8px !important;
+  font-size: 13px !important; font-weight: 500 !important;
+}
+.stButton button:hover {
+  border-color: #4cd7f6 !important; color: #4cd7f6 !important;
+  background: rgba(76,215,246,0.08) !important;
+}
+
 /* ── SELECTBOX / INPUTS ── */
 [data-baseweb="select"] > div {
   background: #0d1520 !important; border-color: #1e2d3d !important;
   color: #e2e8f0 !important;
 }
+/* Dropdown popup arka planı */
 [data-baseweb="popover"] { background: #0d1520 !important; }
-[data-baseweb="menu"] { background: #111f2e !important; border-color: #1e2d3d !important; }
-[data-baseweb="option"]:hover { background: #1a2d3d !important; }
+[data-baseweb="popover"] > div { background: #0f1a26 !important; }
+[data-baseweb="menu"] {
+  background: #0f1a26 !important; border: 1px solid #1e2d3d !important;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.5) !important;
+}
+[data-baseweb="menu"] ul { background: #0f1a26 !important; }
+[data-baseweb="option"] {
+  background: #0f1a26 !important; color: #94a3b8 !important;
+  font-size: 13px !important;
+}
+[data-baseweb="option"]:hover,
+[data-baseweb="option"][aria-selected="true"] {
+  background: #1a2d3d !important; color: #e2e8f0 !important;
+}
+/* Dropdown'ın tetikleyici input alanı */
+[data-baseweb="select"] [data-testid="stSelectbox"],
+[data-baseweb="select"] input {
+  color: #e2e8f0 !important; background: transparent !important;
+}
+/* Seçili değer metni */
+[data-baseweb="select"] [data-baseweb="tag"],
+[data-baseweb="select"] span { color: #e2e8f0 !important; }
 [data-testid="stTextInput"] input {
   background: #0d1520 !important; border-color: #1e2d3d !important;
   color: #e2e8f0 !important;
@@ -931,12 +963,12 @@ elif sayfa == "Bildirimler":
     </div></div>
     """, unsafe_allow_html=True)
 
-    ca, cb = st.columns([3,1])
+    ca, cb = st.columns([4, 1])
     tur_filtre = ca.multiselect("Tür Filtrele", ["fiyat_dustu","fiyat_yukseldi","yeni_paket","paket_kaldirildi","icerik_degisim"],
         default=["fiyat_dustu","fiyat_yukseldi","yeni_paket","paket_kaldirildi"])
     with cb:
-        st.markdown("")
-        if st.button("✓ Tümünü Okundu İşaretle", use_container_width=True):
+        st.markdown('<div style="height:28px;"></div>', unsafe_allow_html=True)
+        if st.button("✓ Tümünü Okundu", use_container_width=True):
             mark_all_read(); st.rerun()
 
     alerts_df = load_alerts(200)
