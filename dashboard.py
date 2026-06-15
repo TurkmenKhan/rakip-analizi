@@ -680,7 +680,7 @@ if sayfa == "Genel Bakış":
                     layers = [trend_c, scatter]
                 except Exception:
                     pass
-            chart = alt.layer(*layers).properties(height=310).configure(background="transparent").configure_view(
+            chart = alt.layer(*layers).properties(height=310).interactive().configure(background="transparent").configure_view(
                 strokeOpacity=0, strokeWidth=0).configure_axis(domainColor="#1e2d3d", domainWidth=1)
             st.altair_chart(chart, use_container_width=True)
         else:
@@ -939,7 +939,7 @@ elif sayfa == "ISS Profili":
                 iss_layers = [tr2, sc]
             except Exception:
                 pass
-        iss_chart = alt.layer(*iss_layers).properties(height=260).configure(background="transparent").configure_view(
+        iss_chart = alt.layer(*iss_layers).properties(height=260).interactive().configure(background="transparent").configure_view(
             strokeOpacity=0, strokeWidth=0).configure_axis(domainColor="#1e2d3d")
         st.altair_chart(iss_chart, use_container_width=True)
 
