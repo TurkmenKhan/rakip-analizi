@@ -78,7 +78,13 @@ def _parse_per_url(bridge, infos: list[dict], isp_name: str) -> list[dict]:
             try:
                 pkgs = fut.result()
                 for p in pkgs:
-                    key = (p.get("hiz_mbps"), p.get("sozlesme_suresi_ay"), int(p.get("fiyat_ilk_donem") or 0))
+                    key = (
+                        p.get("hiz_mbps"),
+                        p.get("teknoloji"),
+                        p.get("sozlesme_suresi_ay"),
+                        int(p.get("fiyat_ilk_donem") or 0),
+                        (p.get("paket_adi") or "")[:30],
+                    )
                     if key not in seen_keys:
                         seen_keys.add(key)
                         all_packages.append(p)

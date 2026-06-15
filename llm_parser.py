@@ -11,6 +11,9 @@ import re
 import time
 
 import requests
+from dotenv import load_dotenv
+
+load_dotenv()
 
 LLM_URL   = os.environ.get("LLM_API_URL",  "https://llm.gen.tr/v1/chat/completions")
 LLM_KEY   = os.environ.get("LLM_API_KEY",  "")
