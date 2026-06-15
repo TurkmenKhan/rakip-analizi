@@ -1016,13 +1016,36 @@ elif sayfa == "Bildirimler":
     # Paket geçmişi
     st.divider()
     st.markdown('<div class="section-title">Paket Geçmişi Sorgula</div>', unsafe_allow_html=True)
-    pk_input = st.text_input("Paket Key", placeholder="paket_key girin...")
-    if pk_input:
-        hist = load_history(pk_input)
-        if not hist.empty:
-            st.dataframe(hist, use_container_width=True, hide_index=True)
-        else:
-            st.info("Geçmiş bulunamadı.")
+    conn_ph = get_conn()
+    ph_isps = [r[0] for r in conn_ph.execute("""
+        SELECT DISTINCT i.name FROM package_history ph
+        JOIN packages p ON p.paket_key=ph.paket_key
+        JOIN isps i ON i.id=p.isp_id
+        ORDER BY i.name
+    """).fetchall()]
+    conn_ph.close()
+    if ph_isps:
+        col_ph1, col_ph2 = st.columns([1, 2])
+        ph_iss = col_ph1.selectbox("ISS", ["— Seçin —"] + ph_isps, key="ph_iss")
+        if ph_iss != "— Seçin —":
+            conn_ph2 = get_conn()
+            ph_pkgs = conn_ph2.execute("""
+                SELECT DISTINCT p.paket_key, p.paket_adi, p.hiz_mbps, p.teknoloji, p.fiyat_ilk_donem
+                FROM package_history ph JOIN packages p ON p.paket_key=ph.paket_key
+                JOIN isps i ON i.id=p.isp_id WHERE i.name=?
+                ORDER BY p.hiz_mbps, p.fiyat_ilk_donem
+            """, (ph_iss,)).fetchall()
+            conn_ph2.close()
+            pkg_labels = {f"{r[1] or ''} — {r[2] or '?'} Mbps {r[3] or ''} {r[4] or '?'} TL": r[0] for r in ph_pkgs}
+            ph_pkg_label = col_ph2.selectbox("Paket", ["— Seçin —"] + list(pkg_labels.keys()), key="ph_pkg")
+            if ph_pkg_label != "— Seçin —":
+                hist = load_history(pkg_labels[ph_pkg_label])
+                if not hist.empty:
+                    st.dataframe(hist, use_container_width=True, hide_index=True)
+                else:
+                    st.info("Bu paket için geçmiş kaydı yok.")
+    else:
+        st.info("Henüz geçmiş kaydı bulunmuyor.")
 
 # ── SAYFA: FİYAT TRENDİ ──────────────────────────────────────────────────────
 
