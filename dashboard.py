@@ -736,7 +736,15 @@ if sayfa == "Genel Bakış":
                 </div>
               </div>
             </div>"""
-        st.markdown(rang_html or '<p style="color:#475569;">Veri yok.</p>', unsafe_allow_html=True)
+        tier_css = """<style>
+.tier-detail{max-height:0;opacity:0;overflow:hidden;
+  transition:max-height .25s ease,opacity .2s ease,margin-top .2s ease;}
+.tier-card:hover .tier-detail{max-height:60px;opacity:1;margin-top:6px;}
+body{background:transparent;margin:0;font-family:sans-serif;}
+</style>"""
+        tier_content = rang_html or '<p style="color:#475569;">Veri yok.</p>'
+        card_count = rang_html.count('tier-card')
+        st.components.v1.html(tier_css + tier_content, height=card_count * 70 + 20, scrolling=False)
 
     # Son fiyat hareketleri
     st.markdown('<div class="section-title">Son Fiyat Hareketleri</div>', unsafe_allow_html=True)
