@@ -289,6 +289,15 @@ h1,h2,h3,h4 { color: #f8fafc !important; }
   border-bottom: 1px solid #1e2d3d;
 }
 
+/* ── TIER CARD (Hız Kırılım) ── */
+.tier-detail {
+  max-height: 0; opacity: 0; overflow: hidden;
+  transition: max-height 0.25s ease, opacity 0.2s ease, margin-top 0.2s ease;
+}
+.tier-card:hover .tier-detail {
+  max-height: 60px; opacity: 1; margin-top: 6px;
+}
+
 /* ── PACKAGE CARD (Karsilastirma) ── */
 .pkg-card {
   background: #0d1520; border: 1px solid #1e2d3d;
@@ -700,18 +709,31 @@ if sayfa == "Genel Bakış":
             mn  = sub_t["fiyat_ilk_donem"].min()
             mx  = sub_t["fiyat_ilk_donem"].max()
             avg = sub_t["fiyat_ilk_donem"].mean()
+            med = sub_t["fiyat_ilk_donem"].median()
+            cnt = len(sub_t)
+            cheapest_row = sub_t.loc[sub_t["fiyat_ilk_donem"].idxmin()]
+            cheapest_iss = cheapest_row["iss"] if "iss" in cheapest_row else "—"
+            cheapest_tek = cheapest_row.get("teknoloji", "") or ""
             bar_left  = mn / global_max * 100
             bar_right = max(0, 100 - mx / global_max * 100)
             dot_pos   = min(99, avg / global_max * 100)
             rang_html += f"""
-            <div style="margin-bottom:14px;">
+            <div class="tier-card" style="margin-bottom:14px;cursor:default;">
               <div style="display:flex;justify-content:space-between;margin-bottom:5px;">
                 <span style="font-size:12px;font-weight:600;color:#e2e8f0;">{hiz} Mbps</span>
                 <span style="font-size:11px;color:#475569;">Min: {int(mn):,} | Max: {int(mx):,}</span>
               </div>
               <div style="position:relative;height:6px;background:#1e2d3d;border-radius:3px;">
                 <div style="position:absolute;left:{bar_left:.1f}%;right:{bar_right:.1f}%;height:100%;background:#4cd7f6;border-radius:3px;opacity:0.4;"></div>
-                <div style="position:absolute;left:{dot_pos:.1f}%;top:50%;transform:translate(-50%,-50%);width:10px;height:10px;background:#4cd7f6;border-radius:50%;border:2px solid #0a0f12;"></div>
+                <div style="position:absolute;left:{dot_pos:.1f}%;top:50%;transform:translate(-50%,-50%);width:10px;height:10px;background:#4cd7f6;border-radius:50%;border:2px solid #0a0f12;" title="Ort: {int(avg):,} TL"></div>
+              </div>
+              <div class="tier-detail">
+                <div style="display:flex;gap:16px;flex-wrap:wrap;">
+                  <span style="font-size:11px;color:#94a3b8;">Ort: <b style="color:#e2e8f0;">{int(avg):,} TL</b></span>
+                  <span style="font-size:11px;color:#94a3b8;">Medyan: <b style="color:#e2e8f0;">{int(med):,} TL</b></span>
+                  <span style="font-size:11px;color:#94a3b8;">{cnt} paket</span>
+                  <span style="font-size:11px;color:#94a3b8;">En ucuz: <b style="color:#4cd7f6;">{cheapest_iss} {int(mn):,} TL</b> <span style="opacity:0.6;">({cheapest_tek})</span></span>
+                </div>
               </div>
             </div>"""
         st.markdown(rang_html or '<p style="color:#475569;">Veri yok.</p>', unsafe_allow_html=True)
@@ -1018,9 +1040,9 @@ elif sayfa == "Bildirimler":
     st.markdown('<div class="section-title">Paket Geçmişi Sorgula</div>', unsafe_allow_html=True)
     conn_ph = get_conn()
     ph_isps = [r[0] for r in conn_ph.execute("""
-        SELECT DISTINCT i.name FROM package_history ph
-        JOIN packages p ON p.paket_key=ph.paket_key
-        JOIN isps i ON i.id=p.isp_id
+        SELECT DISTINCT i.name
+        FROM package_history ph
+        JOIN isps i ON i.id = CAST(SUBSTR(ph.paket_key, 1, INSTR(ph.paket_key, '|') - 1) AS INTEGER)
         ORDER BY i.name
     """).fetchall()]
     conn_ph.close()
@@ -1030,13 +1052,19 @@ elif sayfa == "Bildirimler":
         if ph_iss != "— Seçin —":
             conn_ph2 = get_conn()
             ph_pkgs = conn_ph2.execute("""
-                SELECT DISTINCT p.paket_key, p.paket_adi, p.hiz_mbps, p.teknoloji, p.fiyat_ilk_donem
-                FROM package_history ph JOIN packages p ON p.paket_key=ph.paket_key
-                JOIN isps i ON i.id=p.isp_id WHERE i.name=?
+                SELECT DISTINCT ph.paket_key,
+                    COALESCE(p.paket_adi, ph.paket_key) as paket_adi,
+                    p.hiz_mbps,
+                    COALESCE(p.teknoloji, '') as teknoloji,
+                    p.fiyat_ilk_donem
+                FROM package_history ph
+                LEFT JOIN packages p ON p.paket_key = ph.paket_key
+                JOIN isps i ON i.id = CAST(SUBSTR(ph.paket_key, 1, INSTR(ph.paket_key, '|') - 1) AS INTEGER)
+                WHERE i.name = ?
                 ORDER BY p.hiz_mbps, p.fiyat_ilk_donem
             """, (ph_iss,)).fetchall()
             conn_ph2.close()
-            pkg_labels = {f"{r[1] or ''} — {r[2] or '?'} Mbps {r[3] or ''} {r[4] or '?'} TL": r[0] for r in ph_pkgs}
+            pkg_labels = {f"{r[1] or ''} — {r[2] or '?'} Mbps {r[3] or ''} {int(r[4]) if r[4] else '?'} TL": r[0] for r in ph_pkgs}
             ph_pkg_label = col_ph2.selectbox("Paket", ["— Seçin —"] + list(pkg_labels.keys()), key="ph_pkg")
             if ph_pkg_label != "— Seçin —":
                 hist = load_history(pkg_labels[ph_pkg_label])
