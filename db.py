@@ -268,6 +268,32 @@ def upsert_package(isp_id: int, pkg: dict):
             values
         )
     else:
+        # Aynı fiziksel paket farklı kampanya sayfasından farklı isimle gelmiş olabilir.
+        # slug'a bakmadan hız+teknoloji+fiyat+taahhüt eşleşmesi varsa yeni kayıt açma.
+        logical_dup = conn.execute(
+            """SELECT paket_key FROM packages
+               WHERE isp_id=? AND aktif=1
+                 AND hiz_mbps IS ? AND teknoloji IS ?
+                 AND fiyat_ilk_donem=? AND sozlesme_suresi_ay=?
+               LIMIT 1""",
+            (isp_id, pkg.get("hiz_mbps"), pkg.get("teknoloji"),
+             pkg.get("fiyat_ilk_donem"), pkg.get("sozlesme_suresi_ay", 0))
+        ).fetchone()
+
+        if logical_dup:
+            # Mevcut kaydı güncelle, ayrı satır açma
+            dup_key = logical_dup[0]
+            upd_fields = {k: v for k, v in fields.items() if k not in ("isp_id", "paket_key")}
+            upd_placeholders = ", ".join(f"{k}=?" for k in upd_fields)
+            upd_values = list(upd_fields.values()) + [dup_key]
+            conn.execute(
+                f"UPDATE packages SET {upd_placeholders}, son_guncelleme=datetime('now','localtime') WHERE paket_key=?",
+                upd_values
+            )
+            conn.commit()
+            conn.close()
+            return dup_key, None  # None = "eski kayıt vardı ama key farklıydı"
+
         cols = ", ".join(fields.keys())
         placeholders = ", ".join("?" for _ in fields)
         conn.execute(f"INSERT INTO packages ({cols}) VALUES ({placeholders})", list(fields.values()))
