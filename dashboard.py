@@ -4,6 +4,7 @@ import json
 import re as _re
 import numpy as _np
 from datetime import datetime
+import requests as _requests
 from db import get_conn
 try:
     import altair as alt
@@ -564,6 +565,7 @@ with st.sidebar:
         "ISS Profili",
         "Bildirimler",
         "Fiyat Trendi",
+        "CD Yönetimi",
     ], label_visibility="collapsed")
 
     st.divider()
@@ -1136,3 +1138,145 @@ elif sayfa == "Fiyat Trendi":
                     use_container_width=True, hide_index=True)
             else:
                 st.info("Bu hız için trend verisi yok.")
+
+# ── SAYFA: CD YÖNETİMİ ───────────────────────────────────────────────────────
+
+elif sayfa == "CD Yönetimi":
+    CD_BASE = "http://localhost:5000"
+    CD_KEY  = "9f27a45aed03c826410dc5be255db03b"
+    CD_HDR  = {"x-api-key": CD_KEY}
+
+    st.markdown("### ⚙️ CD Yönetimi — Güncelleme Sıklığı")
+
+    @st.cache_data(ttl=30)
+    def cd_watches():
+        try:
+            r = _requests.get(f"{CD_BASE}/api/v1/watch", headers=CD_HDR, timeout=5)
+            return r.json() if r.ok else {}
+        except Exception:
+            return {}
+
+    watches = cd_watches()
+
+    if not watches:
+        st.error("CD'ye bağlanılamadı (localhost:5000). Docker çalışıyor mu?")
+        st.stop()
+
+    # isp_urls tablosundan uuid → isp_name eşlemesi
+    conn_cd = get_conn()
+    uuid_map = {
+        row[0]: row[1]
+        for row in conn_cd.execute(
+            "SELECT u.cd_uuid, i.name FROM isp_urls u JOIN isps i ON i.id=u.isp_id WHERE u.cd_uuid IS NOT NULL"
+        ).fetchall()
+    }
+    conn_cd.close()
+
+    def _mins(tbc: dict) -> int:
+        """time_between_check dict → toplam dakika"""
+        if not tbc:
+            return 0
+        return (tbc.get("weeks",0)*7*24*60
+              + tbc.get("days",0)*24*60
+              + tbc.get("hours",0)*60
+              + tbc.get("minutes",0))
+
+    def _fmt(mins: int) -> str:
+        if mins <= 0:
+            return "CD varsayılan"
+        if mins < 60:
+            return f"{mins} dk"
+        h, m = divmod(mins, 60)
+        return f"{h} sa {m} dk" if m else f"{h} sa"
+
+    # ISS bazında grupla
+    groups: dict[str, list] = {}
+    unmatched = []
+    for uuid, w in watches.items():
+        iss = uuid_map.get(uuid)
+        if iss:
+            groups.setdefault(iss, []).append((uuid, w))
+        else:
+            unmatched.append((uuid, w))
+
+    st.caption(f"Toplam {len(watches)} watch · {len(groups)} ISS grubu · {len(unmatched)} eşleşmemiş")
+
+    # Özet tablo
+    tablo = []
+    for iss, items in sorted(groups.items()):
+        mins_list = [_mins(w.get("time_between_check", {})) for _, w in items]
+        min_val = min(m for m in mins_list if m > 0) if any(m > 0 for m in mins_list) else 0
+        tablo.append({
+            "ISS": iss,
+            "URL Sayısı": len(items),
+            "Mevcut Sıklık": _fmt(min_val),
+            "_min_mins": min_val,
+            "_uuids": [u for u, _ in items],
+        })
+
+    df_tablo = pd.DataFrame(tablo)
+
+    st.divider()
+    st.markdown("#### Grup Ayarları")
+
+    # Her ISS için bir satır
+    for _, row in df_tablo.iterrows():
+        with st.container():
+            col_iss, col_cur, col_inp, col_btn = st.columns([3, 2, 2, 1])
+            col_iss.markdown(f"**{row['ISS']}**  \n<small style='color:#64748b'>{row['URL Sayısı']} URL</small>", unsafe_allow_html=True)
+            col_cur.markdown(f"<div style='padding-top:8px;color:#94a3b8;font-size:13px;'>Şu an: {row['Mevcut Sıklık']}</div>", unsafe_allow_html=True)
+
+            cur_mins = int(row["_min_mins"]) if row["_min_mins"] > 0 else 60
+            yeni = col_inp.number_input(
+                "Dakika", min_value=5, max_value=1440, value=cur_mins, step=5,
+                key=f"inp_{row['ISS']}", label_visibility="collapsed"
+            )
+            if col_btn.button("Kaydet", key=f"btn_{row['ISS']}", use_container_width=True):
+                tbc = {"weeks":0,"days":0,"hours":int(yeni//60),"minutes":int(yeni%60),"seconds":0}
+                ok = err = 0
+                for uuid in row["_uuids"]:
+                    try:
+                        resp = _requests.put(
+                            f"{CD_BASE}/api/v1/watch/{uuid}",
+                            headers=CD_HDR,
+                            json={"time_between_check": tbc},
+                            timeout=5
+                        )
+                        if resp.ok:
+                            ok += 1
+                        else:
+                            err += 1
+                    except Exception:
+                        err += 1
+                if err == 0:
+                    st.success(f"{row['ISS']}: {len(row['_uuids'])} URL → {_fmt(yeni)} olarak güncellendi.")
+                else:
+                    st.warning(f"{ok} başarılı, {err} hata.")
+                st.cache_data.clear()
+                st.rerun()
+
+    # Tümünü aynı anda güncelle
+    st.divider()
+    st.markdown("#### Tümünü Güncelle")
+    col_all1, col_all2 = st.columns([2, 1])
+    tum_dakika = col_all1.number_input("Tüm ISS'ler için dakika", min_value=5, max_value=1440, value=60, step=5, key="inp_tum")
+    if col_all2.button("Tümüne Uygula", use_container_width=True, type="primary"):
+        tbc = {"weeks":0,"days":0,"hours":int(tum_dakika//60),"minutes":int(tum_dakika%60),"seconds":0}
+        ok = err = 0
+        for uuid in watches:
+            try:
+                resp = _requests.put(f"{CD_BASE}/api/v1/watch/{uuid}", headers=CD_HDR,
+                                     json={"time_between_check": tbc}, timeout=5)
+                ok += (1 if resp.ok else 0)
+                err += (0 if resp.ok else 1)
+            except Exception:
+                err += 1
+        st.success(f"Tüm watch'lar {_fmt(tum_dakika)} olarak ayarlandı. ({ok} OK, {err} hata)")
+        st.cache_data.clear()
+        st.rerun()
+
+    # Eşleşmemiş watch'lar (DB'de kaydı olmayan)
+    if unmatched:
+        with st.expander(f"Eşleşmemiş watch'lar ({len(unmatched)})"):
+            for uuid, w in unmatched[:20]:
+                st.text(f"{uuid[:8]}… | {w.get('url','?')[:80]} | {_fmt(_mins(w.get('time_between_check',{})))}")
