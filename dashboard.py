@@ -909,16 +909,22 @@ elif sayfa == "ISS Profili":
     tek_list = sorted(iss_df["teknoloji"].dropna().unique().tolist())
     tek_str  = " & ".join(t.upper() for t in tek_list[:3]) if tek_list else "—"
 
-    # Son değişim
+    # Son değişim — package_history (fiyat) ve alerts (yeni/kalkan paket) max'ı
     conn2 = get_conn()
     son_deg = conn2.execute("""
-        SELECT ph.degisim_zamani FROM package_history ph
-        JOIN packages p ON p.paket_key=ph.paket_key
-        JOIN isps i ON i.id=p.isp_id
-        WHERE i.name=? ORDER BY ph.degisim_zamani DESC LIMIT 1
-    """, (secili_iss,)).fetchone()
+        SELECT MAX(zaman) FROM (
+            SELECT ph.degisim_zamani AS zaman
+            FROM package_history ph
+            JOIN packages p ON p.paket_key=ph.paket_key
+            WHERE p.isp_id=?
+            UNION ALL
+            SELECT a.olusma_zamani AS zaman
+            FROM alerts a
+            WHERE a.isp_id=?
+        )
+    """, (iss_row["id"], iss_row["id"])).fetchone()
     conn2.close()
-    son_deg_str = _time_ago(son_deg[0]) if son_deg else "—"
+    son_deg_str = _time_ago(son_deg[0]) if son_deg and son_deg[0] else "—"
 
     # ── Header kartı ──
     st.markdown(f"""
