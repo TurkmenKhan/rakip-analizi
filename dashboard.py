@@ -3,9 +3,20 @@ import pandas as pd
 import json
 import re as _re
 import numpy as _np
+import socket as _socket
 from datetime import datetime
 import requests as _requests
 from db import get_conn
+
+def _cd_local() -> bool:
+    try:
+        s = _socket.create_connection(("localhost", 5000), timeout=1)
+        s.close()
+        return True
+    except OSError:
+        return False
+
+_IS_LOCAL_CD = _cd_local()
 try:
     import altair as alt
     _HAS_ALTAIR = True
@@ -558,15 +569,17 @@ with st.sidebar:
 
     st.divider()
 
-    sayfa = st.radio("", [
+    _sayfalar = [
         "Genel Bakış",
         "Karşılaştırma",
         "Tüm Paketler",
         "ISS Profili",
         "Bildirimler",
         "Fiyat Trendi",
-        "CD Yönetimi",
-    ], label_visibility="collapsed")
+    ]
+    if _IS_LOCAL_CD:
+        _sayfalar.append("CD Yönetimi")
+    sayfa = st.radio("", _sayfalar, label_visibility="collapsed")
 
     st.divider()
     st.markdown('<p style="font-size:10px;color:#475569;text-transform:uppercase;letter-spacing:0.1em;padding:4px 16px 4px;">ISS FİLTRE</p>', unsafe_allow_html=True)
