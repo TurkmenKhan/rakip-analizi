@@ -34,6 +34,11 @@ RAKIP_KATEGORILER   = {"rakip", "buyuk"}
 LOG_DIR = os.path.join(os.path.dirname(__file__), "logs")
 os.makedirs(LOG_DIR, exist_ok=True)
 
+# DISABLE_LLM=1 → LLM parse tamamen atlanır. Değişen URL'lerin snapshot'ı ve
+# timestamp'i yine güncellenir (loop tekrar tetiklenmez), Telegram bildirimi
+# doğrudan changedetection.io tarafından gönderilir. Paket tablosu güncellenmez.
+DISABLE_LLM = os.environ.get("DISABLE_LLM", "0") == "1"
+
 
 def setup_logging():
     today = datetime.now().strftime("%Y-%m-%d")
@@ -163,6 +168,15 @@ def run_once(sadece_rakip: bool = False):
                 # Sadece duyuru/diff-only URL'ler değişti
                 save_snapshot(isp_id)
                 logging.info(f"[✓] {isp_name} — diff-only URL değişimi kaydedildi")
+                kontrol += 1
+                continue
+
+            if DISABLE_LLM:
+                # LLM devre dışı — snapshot kaydet, timestamp güncelle, parse yapma
+                save_snapshot(isp_id)
+                for i in parse_infos:
+                    update_url_last_parsed_ts(i["id"], uuid_ts.get(i["cd_uuid"], 0))
+                logging.info(f"[⊘] {isp_name} — LLM devre dışı, {len(parse_infos)} URL değişimi kaydedildi")
                 kontrol += 1
                 continue
 

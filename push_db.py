@@ -1,16 +1,23 @@
 """
 Her main.py turu bittikten sonra SQLite DB'yi GitHub'a push eder.
-Gereksinim: git kurulu + remote origin ayarlı olmalı.
+Gereksinim: git kurulu + remote origin ayarlı olmalı + HTTPS push için PAT
+(credential.helper=store, ~/.git-credentials).
+
+DISABLE_DB_PUSH=1 → tamamen atlanır (PAT yoksa log kirletmesin).
 """
+import os
 import subprocess
 import logging
 from datetime import datetime
 
 
 def push_db_to_github():
+    if os.environ.get("DISABLE_DB_PUSH", "0") == "1":
+        logging.debug("push_db: DISABLE_DB_PUSH=1, atlandı.")
+        return
     try:
         # Push öncesi VACUUM — DB küçük kalsın
-        import sqlite3, os
+        import sqlite3
         db_path = os.path.join(os.path.dirname(__file__), "data", "rakip_analizi.db")
         conn = sqlite3.connect(db_path)
         conn.execute("VACUUM")

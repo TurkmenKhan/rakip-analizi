@@ -12,3 +12,6 @@ fix_*.py
 add_*.py
 reorder_*.py
 disable_*.py
+
+backups/
+requirements-local.txt.local
