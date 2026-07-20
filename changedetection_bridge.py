@@ -209,6 +209,17 @@ class ChangedetectionBridge:
             logging.info(f"[CD sync] {migrated} ISS isp_urls'e taşındı")
 
         watches = self.get_all_watches()
+
+        # GÜVENLİK: CD bağlantı hatası verirse get_all_watches boş {} döner.
+        # Bunu "CD'de watch yok" sanıp DB'yi mahvetmemek için erken çık.
+        # (Gerçekten watch silinmişse manuel müdahale gerek — sync bunu yapmasın.)
+        if not watches:
+            logging.error(
+                "[CD sync] CD'den 0 watch geldi — muhtemelen bağlantı sorunu. "
+                "DB'ye dokunulmadı. CD'yi kontrol edin ve tekrar deneyin."
+            )
+            return {"updated": [], "not_found": [], "migrated": migrated, "aborted": True}
+
         url_uuid_map = self.build_url_to_uuid_map(watches)
 
         conn = get_conn()
