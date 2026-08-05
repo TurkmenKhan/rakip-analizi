@@ -77,10 +77,10 @@ docker compose -f /home/khan/docker/changedetection/docker-compose.yml start cha
 |---|---|---|
 | `CD_BASE_URL` | changedetection URL | `http://localhost:5000` |
 | `CD_API_KEY` | CD API key | `9f27a45aed03c826410dc5be255db03b` |
-| `LLM_API_URL` | LLM endpoint (llm.gen.tr) | `https://llm.gen.tr/v1/chat/completions` |
-| `LLM_API_KEY` | LLM auth token | `sk-llm-…5zTW` |
-| `LLM_MODEL` | Model adı | `gemini-2.5-flash` |
-| `DISABLE_LLM` | 1 → LLM parse tamamen kapalı | **1** |
+| `LLM_API_URL` | LLM endpoint (DeepSeek) | `https://api.deepseek.com/v1/chat/completions` |
+| `LLM_API_KEY` | LLM auth token | `sk-12f5…f69f` |
+| `LLM_MODEL` | Model adı | `deepseek-chat` |
+| `DISABLE_LLM` | 1 → LLM parse tamamen kapalı | **0** |
 | `DISABLE_DB_PUSH` | 1 → GitHub push atlanır (PAT yoksa) | **1** |
 
 ## LLM'i tekrar açma

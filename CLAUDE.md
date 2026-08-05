@@ -4,7 +4,7 @@
 - **Platform**: CachyOS Linux, kullanıcı `khan`, ana repo `/home/khan/rakip-analizi` (symlink → `~/Masaüstü/Rakip Analizi v2/repo`).
 - **Ne yapıyor**: Türkiye ISP rakip analiz sistemi. 128+ ISS'yi izler, fiyat/paket değişimlerini tespit eder, Streamlit dashboard'da gösterir.
 - **Nasıl ayakta durur**: `systemctl --user status rakip-*` — 3 unit (dashboard, main, backup timer). Docker Compose'da CD + Playwright ayrı çalışıyor (`/home/khan/docker/changedetection/`).
-- **Şu anki durum (2026-07-12)**: LLM parse **kapalı** (`DISABLE_LLM=1` `.env`'de). CD tarafındaki Telegram bildirimi çalışıyor. Paket tablosu güncellenmez — kullanıcı LLM'i tekrar açmaya karar verirse `.env`'i düzeltip `rakip-main.service`'i restart etmesi yeter.
+- **Şu anki durum (2026-08-05)**: LLM parse **AÇIK** — DeepSeek API kullanılıyor (`deepseek-chat`, ~2sn/parse). CD Telegram bildirimi de çalışıyor. Paket tablosu her turda güncelleniyor.
 - **Detay operasyon**: [OPERATIONS.md](OPERATIONS.md).
 
 ## Mimari — ÖNEMLİ
@@ -12,7 +12,7 @@
 - **CD** (`http://localhost:5000`, Docker) = Layer 1: scraping + değişim tespiti + Telegram bildirimi (Apprise `tgram://…`)
 - **`changedetection_bridge.py`** → CD API köprüsü, snapshot çeker
 - **`main.py`** → 30dk (rakip) / 2sa (tüm ISS) scheduler, CD'de değişen watch'ları yakalar, LLM'e gönderir, DB'ye yazar
-- **`llm_parser.py`** → llm.gen.tr (OpenAI-uyumlu API, Gemini 2.5 Flash) — **şu an DISABLE_LLM=1**
+- **`llm_parser.py`** → DeepSeek (`api.deepseek.com/v1/chat/completions`, `deepseek-chat` = v4-flash, OpenAI-uyumlu)
 - **`regex_parser.py`** → tanımlı ama `main.py`'de çağrılmıyor (kullanılmıyor)
 - **`alerts.py`** → paket diff → `alerts` tablosu (dashboard için; Telegram DEĞİL — o CD tarafında)
 - **`push_db.py`** → her tur sonu DB'yi GitHub'a push eder (**şu an DISABLE_DB_PUSH=1**, PAT yok)
@@ -44,7 +44,7 @@
 - NETSPEED: digit-split anti-bot, CD de çekemiyor
 - TURKNET: CD'de yok
 - `icerik_degisim` alertler: TT selector geniş, navigation menu diff gürültülü
-- **LLM key durumu**: `sk-llm-JjWlXl0i7UEorxRAU6RFF2TbMK5zTW` key `/v1/models`'ta 200 dönüyor, `gemini-2.5-flash` listede görünüyor ama chat çağrısında 400 "Unknown model" dönüyor — llm.gen.tr paneline girip modele erişim yetkisi veya kotanın durumuna bakmak lazım. Bu yüzden `DISABLE_LLM=1`.
+- **LLM sağlayıcı geçişi (2026-08-05)**: llm.gen.tr'de `gemini-2.5-flash` chat çağrısı hep 400 "Unknown model" dönüyordu (hesap seviyesinde model whitelisti). DeepSeek'e geçildi (`api.deepseek.com/v1`, `deepseek-chat`) — OpenAI-uyumlu, `llm_parser.py` kod değişikliği gerektirmedi, sadece `.env`.
 - **GitHub PAT yok**: `~/.git-credentials` boş. `push_db.py` GitHub yedeği yapmıyor. PAT verildiğinde `~/.git-credentials`'a `https://TurkmenKhan:<PAT>@github.com` yazıp `.env`'de `DISABLE_DB_PUSH=0` yap.
 
 ## Sonraki Claude için: değişiklik yaparken dikkat
